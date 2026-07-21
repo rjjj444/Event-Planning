@@ -1,1 +1,2102 @@
-//Place holder Code//
+<!DOCTYPE html>
+<!-- DOCTYPE tells the browser this is an HTML5 document — always the first line -->
+
+<html lang="en">
+<!-- <html> is the root element wrapping the entire page. lang="en" declares the language
+     for screen readers and search engines -->
+
+<head>
+<!-- <head> contains metadata and resources that load before the page renders —
+     nothing inside here is visible to the user directly -->
+
+<meta charset="UTF-8">
+  <!-- Declares character encoding. UTF-8 supports all unicode characters (emojis,
+       accented letters, special symbols). Without this, non-ASCII characters may
+       display as garbled text -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Critical for mobile responsiveness. Tells the browser:
+       width=device-width — match the viewport to the device's actual screen width
+       initial-scale=1.0 — don't zoom in or out on load
+       Without this, mobile browsers default to rendering at desktop width and zooming out -->
+
+<title>Dvorets Planning</title>
+  <!-- Text shown in the browser tab and used by search engines as the page title -->
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Loads two typefaces from Google Fonts over the network:
+       Space Grotesk — the display/body font, loaded in weights 300, 400, 500, 700
+       Space Mono — the monospace font used for labels/nav, loaded in 400 and 700
+       display=swap — tells the browser to show fallback text immediately, then swap in
+       the custom font once it loads (prevents invisible text during load) -->
+
+<!-- NOTE: a script called setGlowEffectRx used to live here in <head> from an earlier
+     button effect. It has since been removed entirely along with that effect — this
+     file now uses the pill-button effect (see the "BUTTONS" CSS block and the hero
+     markup below). Left this note in case you see it referenced in older versions. -->
+
+<style>
+  /* ============================================================
+     RESET & ROOT
+     A "CSS reset" strips browser default styles so every browser
+     (Chrome, Firefox, Safari, etc.) starts from the same blank
+     slate — without this, the same HTML can look slightly
+     different depending on which browser renders it.
+     ============================================================ */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* This is a "universal selector" (*) — it matches every single element on the
+     page, plus the ::before and ::after pseudo-elements (invisible extra elements
+     you can generate with CSS content: '' — used later for decorative shapes).
+
+     box-sizing: border-box
+       By default, CSS adds padding and border ON TOP of the width you set
+       (e.g. width: 100px + 10px padding = 120px actual width). border-box changes
+       this so padding and border are included INSIDE the declared width/height —
+       so width: 100px always renders as 100px total. Makes layout math predictable.
+
+     margin: 0; padding: 0;
+       Removes all default browser spacing (e.g. <h1> has a built-in top margin,
+       <ul> has built-in left padding for bullet indentation). Zeroing these out
+       means every bit of spacing you see on the page was deliberately added by
+       this stylesheet, not left over from browser defaults. */
+
+     /** Two separate things are happening in that one rule, and they show up differently across your page:
+          box-sizing: border-box — matters most on elements that combine an explicit width/height with padding or a border, 
+          since without it the padding/border would add on top and make the element bigger than intended. On your page, 
+          the clearest example is .pill-cap: it's set to width: 48px and has a 1px border plus a 1px right border. 
+          Without border-box, it would actually render at 50px wide, and the seam between the cap and .pill-glass would misalign. 
+          Similarly .pill-btn-wrapper (height: 52px) and elements like .tag (padding + border, 
+          forming those little pill-shaped skill labels) rely on this to keep their sizing predictable.
+          margin: 0; padding: 0; — this is the one with the bigger visible impact, 
+          because it strips out spacing browsers add automatically to certain tags before any of your CSS even runs. 
+     
+          Concretely on your page:
+
+          Your <h1 class="hero-name"> ("RJ Newton.") — browsers give <h1> a hefty default top/bottom margin (~0.67em). 
+          Without the reset, you'd get extra unwanted space above your name, 
+          which would push against the justify-content: flex-end layout in .hero-left 
+          and throw off the bottom-alignment you're relying on.
+          Every <p> tag — .hero-eyebrow, .hero-desc, .project-desc, .timeline-title, .timeline-place, 
+          the footer <p>s, .hero-stat-num/.hero-stat-label — 
+          all of these would otherwise carry default top/bottom margins, 
+          adding unpredictable extra gaps between them and messing with your gap values in the flex/grid containers.
+          Both <ul> elements — .nav-links (Work/Skills/About/Contact) 
+          and .skill-list (the Python/R/JavaScript lists in Capabilities) — 
+          browsers indent <ul> with roughly 40px of left padding by default 
+          (space reserved for bullet markers). 
+          Without the reset, your nav links and skill list items would all be shifted right by that amount, 
+          even after you've already removed the bullets with list-style: none.
+
+          So in short: without this line, your hero name would sit lower than intended, 
+          your nav and skills lists would be indented oddly, 
+          and paragraph spacing throughout the page (hero description, project cards, timeline entries, footer) 
+          would be inconsistent and browser-dependent rather than controlled entirely by your own gap/margin-bottom values.
+     **/
+
+  :root {
+    /* :root is a CSS selector that targets the <html> element — the very top of
+       the document. It's used here specifically to declare CSS custom properties
+       (also called "CSS variables"). A variable is just a named value you can
+       reuse anywhere in the stylesheet with var(--name-here). The big benefit:
+       change the value once here, and it updates everywhere it's used. */
+
+    --ink: #0a0a0a;                             /* Near-black. Used for text and dark surfaces (buttons, section banners) */
+    --paper: #F9F9F9;                           /* Warm off-white. The main page background color */
+    --mid: #8a8a8a;                             /* Medium gray. Used for secondary/muted text like labels and descriptions */
+    --rule: #d0cdc9;                            /* Light warm gray. Used for the thin border "rule lines" throughout the page */
+    --accent: #0a0a0a;                          /* Accent color — currently same as ink, kept as its own variable in case you
+                                                    want to introduce a different accent color later without hunting through the file */
+    --serif-disp: 'Space Grotesk', sans-serif;  /* The main display/body font. sans-serif is the fallback if Space Grotesk fails to load */
+    --mono: 'Space Mono', monospace;            /* The monospace font used for nav links, labels, and tags. monospace is the fallback */
+
+    /* The four variables below ("chalk" tokens) were designed for an earlier
+       version of the hero where the background was dark and text needed to be
+       light/"chalk" colored to stay readable. The hero is now light, so these
+       aren't actively used, but they're kept here in case a dark section is
+       reintroduced later and needs light-colored text again. */
+    --chalk:       #f0ede8;                     /* Warm white — kept for reference */
+    --chalk-dim:   #d8d5d0;                     /* Slightly dimmer white — kept for reference */
+    --chalk-ghost: #a8a5a0;                     /* Muted gray — kept for reference */
+    --border-mid:  rgba(10,10,10,0.12);         /* A semi-transparent ink-black rule line — the rgba() format means
+                                                    (red, green, blue, alpha) where alpha 0.12 = 12% opacity, letting the
+                                                    page background show through slightly */
+  }
+
+  html { scroll-behavior: smooth; }
+  /* Applied to the whole document. When someone clicks a link like <a href="#projects">,
+     normally the browser jumps instantly to that section. scroll-behavior: smooth makes
+     the browser animate the scroll instead, so it glides down the page. */
+
+  body {
+    background: var(--paper);         /* Uses the --paper variable declared above as the page's background color */
+    color: var(--ink);                /* Default text color for every element — child elements inherit this unless overridden */
+    font-family: var(--serif-disp);   /* Default typeface for the whole page */
+    font-size: 15px;                  /* The BASE font size. Any "rem" unit elsewhere in this file is a multiple of this —
+                                          e.g. 2rem = 30px, because 1rem = this body font-size */
+    line-height: 1.6;                 /* Spacing between lines of text, as a multiple of the font size (1.6× the text height).
+                                          Improves readability versus the cramped browser default of ~1.2 */
+    overflow-x: hidden;               /* Prevents a horizontal scrollbar from appearing if any element (like large decorative
+                                          type) accidentally extends past the edge of the viewport */
+  }
+
+/* ============================================================
+     NAVIGATION
+     The <nav> bar fixed to the top of the page. It stays
+     visible even as the user scrolls down.
+     ============================================================ */
+
+  nav {
+    position: fixed;                        /* Takes this element OUT of the normal page flow and "pins" it to a fixed spot
+                                                in the browser window — it won't move even as the rest of the page scrolls */
+    top: 0; left: 0; right: 0;             /* Combined with position: fixed, this stretches the nav bar edge-to-edge
+                                                across the very top of the screen */
+    z-index: 200;                           /* Stacking order for overlapping elements — higher numbers sit visually on top
+                                                of lower numbers. 200 is high enough to stay above all other page content */
+    display: flex;                          /* Turns this element into a "flex container" — its direct children (the logo
+                                                span and the nav-links list) become "flex items" that flow left-to-right and
+                                                can be aligned/spaced using the flex properties below */
+    justify-content: space-between;         /* Distributes flex items along the main (horizontal) axis. space-between pushes
+                                                the first item flush to the left edge and the last item flush to the right
+                                                edge, with any extra room split evenly between them — this is what pushes
+                                                the logo left and the nav links right */
+    align-items: center;                    /* Aligns flex items along the cross (vertical) axis — center means the logo and
+                                                links are vertically centered inside the nav bar's height */
+    padding: 1.2rem 2.5rem;                 /* Shorthand: 1.2rem top & bottom, 2.5rem left & right. Adds breathing room
+                                                inside the nav bar so content doesn't touch the edges */
+    border-bottom: 0.5px solid var(--rule); /* A hairline (0.5px) solid line along the bottom edge only, using the --rule
+                                                color — visually separates the nav from the page content beneath it */
+    background: var(--paper);              /* Solid background color so page content scrolling underneath doesn't show
+                                                through the fixed nav bar */
+    transition: background 0.4s ease, border-color 0.4s ease;
+    /* "transition" tells the browser to animate a property smoothly whenever its value
+       changes, instead of snapping instantly. Here it applies to two properties:
+         background — animates over 0.4 seconds
+         border-color — also animates over 0.4 seconds
+       "ease" is the timing curve: starts fast, slows down toward the end.
+       This was originally built for a transparent-to-solid nav transition on scroll;
+       kept here in case that visual effect is reintroduced later. */
+  }
+
+  /* JS below (see the "NAV SCROLL TRANSITION" script near the bottom of the page)
+     adds this class once the user has scrolled past the hero section. Right now it
+     looks visually identical to the base nav styles above (both use --paper), so
+     this exists mainly as a hook for future styling changes (e.g. adding a shadow
+     once scrolled) without needing to touch the JavaScript. */
+  nav.scrolled {
+    background: var(--paper);
+    border-bottom-color: var(--rule);
+  }
+
+  .nav-logo {
+    /* Styles the "RJ Newton — Dev" text on the left side of the nav bar */
+    font-family: var(--mono);    /* Uses the monospace font variable for a coded/technical feel */
+    font-size: 12px;
+    letter-spacing: 0.12em;      /* Extra spacing between letters. "em" is relative to the current font-size —
+                                     0.12em = 12% of 12px added between each character */
+    text-transform: uppercase;   /* Forces the text to render in ALL CAPS regardless of how it's typed in the HTML */
+    color: var(--ink);
+    transition: color 0.4s ease; /* Smoothly animates the text color if it ever changes (e.g. in the .scrolled state) */
+  }
+
+  nav.scrolled .nav-logo { color: var(--ink); }
+  /* This is a "descendant selector": it only targets .nav-logo elements that are
+     nested INSIDE an element with the .scrolled class. Right now it's the same
+     color as the base .nav-logo rule, but having it here means you can change the
+     scrolled-state color independently later without affecting the base state. */
+
+  .nav-links {
+    /* Targets the <ul> that contains the four navigation links (Work, Skills, About, Contact) */
+    display: flex;    /* Lays the <li> children out horizontally in a row instead of the default vertical list stacking */
+    gap: 2.5rem;       /* Adds consistent spacing between each flex item — cleaner than manually adding margins to each <li> */
+    list-style: none; /* Removes the default bullet point (•) that browsers put in front of <li> elements */
+  }
+
+  .nav-links a {
+    /* Styles every <a> (anchor/link) tag nested inside .nav-links */
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;   /* Removes the default underline that browsers put under links */
+    color: var(--mid);
+    transition: color 0.15s; /* Animates the text color over 0.15 seconds whenever it changes (e.g. on hover) */
+  }
+
+  nav.scrolled .nav-links a { color: var(--mid); }
+  /* Same idea as nav.scrolled .nav-logo above — currently identical to the base
+     color, kept as a hook for future differentiation. */
+
+  .nav-links a:hover { color: var(--ink) !important; }
+  /* :hover is a "pseudo-class" — a special selector that only applies while the
+     user's mouse cursor is directly over the element. So this rule only takes
+     effect during a hover, switching the link color to full ink-black.
+     !important forces this rule to override any other color rule that might
+     otherwise win due to CSS specificity rules — a way of saying "this one wins,
+     no matter what." */
+
+  nav.scrolled .nav-links a:hover { color: var(--ink) !important; }
+  /* Ensures the hover-to-ink-black effect still works correctly even once the
+     .scrolled class has been added to the nav. */
+
+
+  /* ============================================================
+     HERO BACKGROUND — PORTRAIT IMAGE
+     The large portrait photo that sits behind/within the hero
+     section. It's an actual <img> tag (not a CSS background),
+     which gives more control over its natural size and position.
+     ============================================================ */
+
+  .hero-bg-image {
+    /* This <div> wraps the <img> and controls where that image sits inside the hero */
+    position: absolute; /* Takes the element out of normal flow and positions it relative to the nearest
+                            ancestor that has position: relative — which is .hero below. Without .hero being
+                            position: relative, this would instead position relative to the whole page. */
+    inset: 0;           /* Shorthand for "top: 0; right: 0; bottom: 0; left: 0" all at once — stretches this
+                            div to completely fill its positioned parent (.hero) */
+    display: flex;
+    align-items: flex-end;     /* Vertically aligns the image to the BOTTOM of this container — ensures the
+                                   figure's feet stay visible at the bottom of the hero regardless of screen height */
+    justify-content: center;   /* Horizontally centers the image within the container */
+    pointer-events: none;      /* Makes this element (and its children) "invisible" to mouse/touch events — clicks
+                                   pass straight through it to whatever is layered beneath. Since this is a purely
+                                   decorative photo, we don't want it intercepting clicks meant for buttons/links */
+    z-index: 3;                /* Stacking order — this sits behind the hero text (which uses z-index: 4 further down) */
+  }
+
+  .hero-bg-image img {
+    /* Styles the actual <img> element inside the wrapper above */
+    height: 65vh;        /* "vh" = viewport height units. 1vh = 1% of the visible browser window's height.
+                             65vh means the image is scaled to 65% of the screen's height, regardless of the
+                             image's original pixel dimensions. Increase this number to show more of the figure. */
+    width: auto;         /* Lets the width scale automatically to match the height, preserving the image's
+                             natural aspect ratio so nothing looks stretched or squished */
+    object-fit: contain; /* Ensures the whole image fits inside its box without being cropped, even if the
+                             box's proportions don't exactly match the image's proportions */
+    opacity: 0;          /* Starts fully invisible. This prevents a jarring "flash" of a half-loaded image —
+                             instead it stays hidden until JavaScript confirms the image has fully downloaded */
+    transition: opacity 2s ease; /* When the .loaded class (below) is added by JavaScript, this animates the
+                                     opacity change from 0 to 1 smoothly over 2 seconds instead of popping in instantly */
+  }
+
+  .hero-bg-image.loaded img { opacity: 1; }
+  /* JavaScript (see the "HERO IMAGE FADE-IN" script near the end of the file) adds
+     the .loaded class to the wrapper div once the browser confirms the <img> has
+     fully downloaded. This selector then targets the <img> INSIDE that now-loaded
+     wrapper and sets its opacity to 1 (fully visible), which — combined with the
+     transition above — creates a smooth 2-second fade-in effect. */
+
+
+  /* ============================================================
+     HERO SECTION
+     The full-height landing area at the top of the page —
+     contains the portrait, name, description, buttons (left
+     side) and the stats/decorative type (right side).
+     ============================================================ */
+
+  .hero {
+    padding-top: 80px;              /* Pushes hero content down by 80px so it isn't hidden underneath the fixed
+                                        nav bar, which sits on top of everything at a height of roughly 80px */
+    min-height: 100vh;              /* The hero is AT LEAST the full height of the browser viewport (100vh = 100%
+                                        of visible screen height). min-height (rather than a fixed height) lets it
+                                        grow taller automatically if its content ever needs more vertical space */
+    display: grid;                  /* Turns this into a CSS Grid container — a two-dimensional layout system
+                                        (as opposed to flexbox's one-dimensional row/column layout) */
+    grid-template-columns: 2fr 1fr; /* Defines two columns. "fr" = "fraction unit" — it divides the available
+                                        space proportionally. 2fr 1fr means the first column gets 2 parts of the
+                                        space for every 1 part the second column gets, i.e. the left column is
+                                        twice as wide as the right column */
+    position: relative;             /* Establishes this as the "positioning context" for any child element that
+                                        uses position: absolute — like .hero-bg-image and the vertical "DEV" type,
+                                        which position themselves relative to THIS element rather than the whole page */
+    z-index: 10;                    /* Keeps the hero section above other stacked layers on the page */
+    border-bottom: 0.5px solid var(--rule); /* Hairline rule separating the hero from the Projects section below it */
+    overflow: hidden;               /* Clips (hides) any content that visually extends past the edges of this
+                                        section — used to trim the decorative vertical "DEV" text and to contain
+                                        the CTA buttons' glow effects so they don't bleed outside the hero */
+    background: var(--paper);       /* Explicit background color, ensuring the portrait image's white background
+                                        blends seamlessly into the page rather than showing a visible edge */
+  }
+
+  .hero-left {
+    /* The left ~two-thirds of the hero grid: eyebrow label, name, description, and CTA buttons */
+    padding: 3rem 2.5rem 3rem;  /* Shorthand: 3rem top, 2.5rem left/right, 3rem bottom */
+    display: flex;
+    flex-direction: column; /* Stacks the eyebrow/name/description/buttons vertically instead of side by side */
+    justify-content: flex-end; /* Pushes all the flex children down to the BOTTOM of this column, so the name and
+                                   description sit near the bottom edge of the hero rather than the top */
+    position: relative;     /* Establishes a stacking context so z-index below actually has effect */
+    z-index: 4;             /* Sits above the hero-bg-image (z-index: 3), so text renders on top of the photo */
+  }
+
+  .hero-eyebrow {
+    /* The small label above the big name, e.g. "SOFTWARE DEV / DATA SCIENTIST / WEB DEV".
+       In editorial/magazine design this kind of short descriptor above a headline is
+       called an "eyebrow." */
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em; /* Slightly wider letter spacing than most labels on the page — helps legibility
+                                at this small font size */
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1.5rem; /* Space between this label and the big name heading below it */
+  }
+
+.here-name-container {
+  /* NOTE: this class isn't currently referenced anywhere in the HTML below — it looks
+     like leftover CSS from an earlier layout experiment. Kept here in case it's
+     reintroduced, but it has no visible effect on the page as it currently stands. */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  z-index: 2; /* Ensure it stays above the rain effect */
+}
+
+.hero-name {
+    /* The big "RJ Newton." heading */
+    position: relative; /* Needed so the .hero-name-glitch overlay (below) — which is position: absolute — can
+                            position itself relative to THIS element rather than the whole page */
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    /* clamp(MIN, PREFERRED, MAX) is a fluid-sizing function: the font-size will be 7% of
+       the viewport width (7vw), but never smaller than 3.5rem and never larger than 6rem.
+       This means the heading automatically scales with screen size within safe limits,
+       instead of needing separate font-size rules for every breakpoint. */
+    font-weight: 700;          /* Bold weight */
+    line-height: 0.92;         /* Slightly TIGHTER than the font size (less than 1) — pulls the two stacked
+                                   lines ("RJ" and "Newton.") closer together for a punchy, condensed look */
+    letter-spacing: -0.03em;   /* NEGATIVE letter spacing — pulls letters slightly closer together, common
+                                   for large display type to avoid looking too "loose" */
+    margin-bottom: 2rem;
+    color: var(--ink); /* The visible, "real" text — stays this solid ink color regardless of the glitch effect below */
+}
+
+.hero-name-glitch {
+  /* This is a SECOND, duplicate copy of the "RJ Newton." text, positioned exactly on
+     top of the real one. It's sliced and offset via CSS animation (see @keyframes
+     glitch below) to create a brief digital "glitch" flicker. aria-hidden="true" in
+     the HTML tells screen readers to skip this element, since it's purely a visual
+     effect and reading it aloud would just repeat the name a second time. */
+  position: absolute;   /* Positions relative to .hero-name (its nearest position: relative ancestor) */
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation: glitch 6s infinite steps(1);
+  /* Runs the @keyframes glitch animation (defined below), taking 6 seconds per cycle,
+     repeating forever (infinite). steps(1) makes the animation JUMP instantly between
+     keyframe states rather than smoothly blending between them — this snappy,
+     non-interpolated motion is what sells the "glitch" look rather than a smooth slide. */
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  /* clip-path cuts the element down to a custom shape. polygon() defines that shape as
+     a series of (x% y%) coordinate points connected in order. This particular set of
+     points creates a rectangle covering only the TOP 45% of the element — so only the
+     top slice of the duplicated text is visible at rest (before the animation moves it) */
+  transform: translate(-2px, -2px); /* Shifts this slice 2px left and 2px up from its natural position */
+  color: var(--ink);
+  text-shadow: 1.5px 0 0 rgba(178, 74, 74, 0.5), -1.5px 0 0 rgba(74, 120, 178, 0.5);
+  /* text-shadow can take multiple comma-separated shadows. Here there are two:
+       one offset 1.5px to the RIGHT, colored a translucent red
+       one offset 1.5px to the LEFT, colored a translucent blue
+     Together these create the classic red/blue "chromatic aberration" fringe you see
+     in real digital glitch effects and old CRT displays. */
+  pointer-events: none; /* Purely visual — clicks and text selection pass through to whatever's beneath */
+  opacity: 0; /* Hidden by default so this ghost copy doesn't show at all when the animation is at rest */
+}
+
+     /* Glitch effect for the text */
+@keyframes glitch {
+  /* @keyframes defines a named, multi-step animation sequence. Each percentage below
+     represents a point in time within one animation cycle (0% = start, 100% = end).
+     The animation-duration set above (6s) determines how long one full cycle takes —
+     so "93%" here corresponds to roughly 5.58 seconds into each 6-second cycle. */
+
+  0%, 92%, 100% {
+    /* This rule applies at three different points at once: the very start (0%), 92%
+       of the way through, and the very end (100%). Because these three points share
+       identical values, the element stays in this "resting" (invisible) state for the
+       vast majority of each cycle — roughly the first 92% and the last portion after
+       97%, which is what creates the long pause between glitch bursts. */
+    opacity: 0;                              /* fully hidden during the pause */
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translate(0);
+  }
+  93% {
+    opacity: 1;                              /* appears only for the burst */
+    clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%); /* narrower top-slice visible */
+    transform: translate(-5px, -5px);        /* larger jump left and up */
+  }
+  95% {
+    opacity: 1;
+    clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%); /* now shows a slice from the BOTTOM instead */
+    transform: translate(5px, 5px);          /* jumps right and down */
+  }
+  97% {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%); /* back to a top slice */
+    transform: translate(-3px, 3px);
+  }
+  /* After 97%, the animation continues on to the shared 100% keyframe defined at the
+     top of this block, snapping back to the invisible resting state. */
+}
+
+     /*
+     The pause length is controlled by the ratio, not a separate property.
+     With animation-duration: 6s and keyframes sitting at 92–100%,
+     the "normal" state holds for roughly the last 5.5 seconds of each 6-second cycle — that's your pause.
+     Want a longer wait between glitches?
+     Increase the duration (e.g. 10s) without changing the percentages, and the pause stretches proportionally.
+     Consider steps() instead of the default ease.
+     Right now the browser smoothly interpolates between your keyframes,
+     which can make the glitch burst look like it's sliding rather than snapping.
+     Adding animation-timing-function: steps(1) makes it jump instantly between keyframe states instead — closer to a real glitch:
+     */
+
+
+  .hero-desc {
+    /* The paragraph beneath the name: "Full-stack developer and data scientist..." */
+    font-size: 14px;
+    color: var(--mid);
+    max-width: 28ch;          /* "ch" = the width of the "0" character in the current font — a handy unit for
+                                  controlling line length in terms of readable character count. 28ch means each
+                                  line wraps at roughly 28 characters, keeping the paragraph narrow and readable
+                                  rather than stretching edge-to-edge */
+    line-height: 1.7;
+    border-top: 0.5px solid var(--rule); /* Hairline rule above the paragraph, visually separating it from the name */
+    padding-top: 1.5rem;
+  }
+
+  .hero-right {
+    /* The right ~third of the hero grid: the stat blocks (4+/7/2) and the decorative
+       vertical "DEV" ghost type */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes the stats block to the top and lets the vertical type occupy the
+                                        remaining middle/bottom space */
+    padding: 3rem 2.5rem;
+    position: relative;      /* Positioning context for the absolutely-positioned .hero-vertical-type below */
+    z-index: 4;              /* Sits above the hero-bg-image */
+    border-left: 0.5px solid var(--rule); /* Vertical hairline rule dividing this column from hero-left */
+    padding-left: 2.5rem;    /* Extra breathing room between that divider line and the stat text */
+  }
+
+  .hero-vertical-type {
+    /* The large decorative "DEV" text, rotated 90° and rendered as just an outline
+       (no fill) on the right side of the hero. Purely decorative — not meant to be
+       "read" in the traditional left-to-right sense. */
+    writing-mode: vertical-rl;  /* Changes the text's flow direction from horizontal to vertical.
+                                    "rl" (right-to-left) here, combined with how characters stack,
+                                    results in the text reading top-to-bottom */
+    text-orientation: mixed;    /* Keeps individual Latin letters upright (not sideways) even though the
+                                    overall text flow is vertical */
+    font-size: clamp(5rem, 12vw, 10rem); /* Fluid sizing again — scales with viewport width between 5rem and 10rem */
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.88;
+    color: transparent;         /* Makes the letter FILL invisible — you'll only see the stroke/outline below */
+    -webkit-text-stroke: 1.5px rgba(10,10,10,0.12);
+    /* Draws a 1.5px outline around each character at 12% opacity. The -webkit- prefix
+       is required because text-stroke isn't yet a standard CSS property supported
+       natively by every browser — this prefixed version ensures wide compatibility.
+       Combined with color: transparent above, this creates a faint "ghost type"
+       outline-only effect. */
+    pointer-events: none;       /* Purely decorative — unclickable, doesn't intercept mouse events */
+    position: absolute;         /* Removes from normal flow, positioned relative to .hero-right */
+    right: 2rem;
+    top: 60%;
+    transform: translateY(-50%); /* Shifts the element UP by exactly half of its own rendered height —
+                                     a common trick to perfectly vertically-center an element whose height
+                                     you don't know in advance (e.g. because the font-size is fluid/clamp()) */
+    user-select: none;           /* Prevents the user from highlighting/selecting this text with their cursor */
+  }
+
+  .hero-stats {
+    /* Wrapper holding the three stat blocks: "4+ Years", "7 Languages", "2 Research Domains" */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;       /* Vertical space between each stat block */
+    margin-left: auto; /* In a flex container, setting margin-left: auto on a child pushes it (and everything
+                           after it) as far right as possible — here it shoves the whole stats block to the
+                           right edge of its column */
+  }
+
+  .hero-stat {
+    /* One individual stat block, e.g. the "4+" / "Years experience" pair */
+    border-top: 0.5px solid var(--rule); /* Thin rule above each stat, visually separating them */
+    padding-top: 1rem;
+  }
+
+  .hero-stat-num {
+    /* The large number in each stat block: "4+", "7", "2" */
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .hero-stat-label {
+    /* The small caption beneath each number: "Years experience", "Languages...", etc. */
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 4px;    /* Small gap between the number above and this label */
+  }
+
+  .hero-cta-row {
+    /* The wrapper <div> that groups the two call-to-action buttons ("View work" and
+       "Get in touch") and lays them out side by side */
+    display: flex;
+    gap: 1rem;          /* Horizontal spacing between the two buttons */
+    align-items: center; /* Vertically aligns both buttons to the same center line, even if their heights differ slightly */
+  }
+
+  /* ============================================================
+     BUTTONS — pill / battery-glow effect
+     A dark, pill-shaped button made of two visual pieces:
+       1. .pill-cap — a solid brushed-metal-looking left "cap"
+       2. .pill-glass — a frosted-glass right section that glows
+          cyan on hover, like current flowing through a filament
+     This effect intentionally uses its OWN dark/neon color
+     palette rather than the site's ink/paper system — it's meant
+     to stand out as an accent, not blend in. The font-family is
+     set to the site's existing --mono variable so the button
+     label still feels consistent with the rest of the typography.
+     ============================================================ */
+
+  .pill-btn-wrapper {
+    /* The outermost <a> tag — the actual clickable link. Every other pill-* element
+       below is nested inside this one. */
+    position: relative;      /* Positioning context for the absolutely-positioned .pill-bg-glow child */
+    display: inline-flex;    /* Like display: flex, but the element itself behaves like an inline element
+                                 (sits alongside text/other elements) rather than forcing a new line */
+    height: 52px;             /* Fixed pill height — width isn't set explicitly, so it grows automatically to
+                                  fit its content (the cap + glass + text) */
+    border-radius: 999px;     /* An intentionally huge radius — since no side of this element is anywhere close
+                                  to 999px long, the corners round all the way into a full pill/capsule shape */
+    text-decoration: none;    /* Removes the default underline that would otherwise appear since this is an <a> tag */
+    cursor: pointer;          /* Changes the mouse cursor to a pointing hand when hovering, signaling "clickable" */
+    outline: none;            /* Removes the default focus outline browsers add when the element is clicked/tabbed to.
+                                  (Note: removing focus outlines can hurt keyboard-accessibility — usually you'd want
+                                  to replace this with a custom focus style rather than removing it entirely) */
+    -webkit-tap-highlight-color: transparent;
+    /* On mobile Safari/Chrome, tapping a link normally flashes a gray highlight box.
+       This removes that highlight so the custom hover/press effects below aren't
+       interrupted by the browser's default tap feedback. */
+    font-family: var(--mono); /* Uses the site's existing monospace variable, so the pill button's text matches
+                                  the rest of the site's type system even though its colors don't */
+  }
+
+  .pill-bg-glow {
+    /* A soft, blurred glow shape that sits BEHIND the whole pill and only becomes
+       visible on hover — like a halo of light radiating outward. */
+    position: absolute;
+    inset: -4px;          /* Extends 4px past every edge of the parent .pill-btn-wrapper, so the glow is
+                              slightly larger than the pill itself and radiates outward from behind it */
+    background: rgba(74, 140, 255, 0); /* Starts fully transparent (alpha 0) — invisible until hovered */
+    filter: blur(16px);   /* Blurs this element's rendered content by 16px, turning its sharp pill shape
+                              into a soft diffuse glow */
+    opacity: 0;            /* Also starts fully hidden — combined with the transparent background above,
+                               this element has no visible presence at rest */
+    border-radius: 999px; /* Matches the pill shape of the parent */
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Animates ANY property that changes (background, opacity, transform, filter) over
+       0.6 seconds. cubic-bezier(...) is a custom easing curve — rather than a simple
+       "ease" or "linear" curve, this one is tuned to start fast and settle very
+       gently at the end, giving the glow a soft, floaty feel. */
+    z-index: 0;            /* Sits behind everything else in the button (which use z-index: 1 or higher) */
+    transform: translateY(2px) scale(0.95); /* Starts slightly lower and smaller than its final hover size —
+                                                creates a subtle "growing into place" motion on hover */
+    pointer-events: none;  /* Purely decorative — never intercepts clicks */
+  }
+
+  .pill-btn-wrapper:hover .pill-bg-glow {
+    /* When the mouse hovers over the OUTER wrapper, this rule updates the glow's styles.
+       Because of the transition rule above, the browser animates smoothly between the
+       resting state and this hover state rather than snapping instantly. */
+    opacity: 1;
+    background: rgba(51, 210, 255, 0.35); /* A cyan-blue color at 35% opacity — this is the actual glow color */
+    transform: translateY(4px) scale(1.02); /* Grows slightly larger and settles slightly lower — like it's
+                                                 "landing" and expanding as it lights up */
+    filter: blur(20px); /* Blurs slightly more on hover for an even softer glow */
+  }
+
+  .pill-container {
+    /* Wraps the visible cap + glass pieces together and handles the "lift on hover" motion */
+    position: relative;
+    z-index: 1;           /* Sits above the .pill-bg-glow (z-index: 0) */
+    display: flex;         /* Lays the cap and glass sections side by side horizontally */
+    height: 100%;           /* Fills the full 52px height set on the parent .pill-btn-wrapper */
+    border-radius: 999px;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Animates both transform (position/scale) and box-shadow changes over 0.5s using
+       the same custom easing curve as the glow above, for a consistent feel */
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    /* box-shadow can list multiple shadows separated by commas:
+         "0 10px 24px rgba(0,0,0,0.6)" — a drop shadow: 0 horizontal offset, 10px down,
+           24px blur radius, dark and semi-transparent — gives the pill a "floating
+           above the page" look
+         "inset 0 0 0 1px rgba(255,255,255,0.02)" — the "inset" keyword flips the
+           shadow to render INSIDE the element instead of outside, with 0 blur and a
+           1px spread — this creates a barely-visible 1px light border tracing the
+           inner edge of the pill, adding subtle dimension */
+  }
+
+  .pill-btn-wrapper:hover .pill-container {
+    transform: translateY(-2px); /* Lifts the whole pill UP by 2px on hover — a classic "button rises to meet
+                                     your cursor" micro-interaction */
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Deepens both shadows on hover — the drop shadow grows larger/darker (suggesting the
+       pill has physically risen further from the page) and the inner light border
+       becomes slightly more visible */
+  }
+
+  /* Solid Left Cap */
+  .pill-cap {
+    /* The metal-looking rounded rectangle on the LEFT end of the pill */
+    width: 48px;
+    height: 100%;
+    background: linear-gradient(180deg, #42424a 0%, #202025 35%, #0f0f13 100%);
+    /* linear-gradient(direction, color stop, color stop, ...) paints a smooth blend
+       between multiple colors. 180deg means the gradient flows straight down (top to
+       bottom). The three color stops go from a lighter gray (#42424a) at the top,
+       through a darker gray (#202025) at 35% of the way down, to near-black (#0f0f13)
+       at the very bottom — this vertical light-to-dark blend is what makes it read as
+       a rounded, slightly reflective metal surface rather than a flat gray rectangle. */
+    border-radius: 999px 0 0 999px;
+    /* border-radius can take four values, one per corner, in this order:
+       top-left, top-right, bottom-right, bottom-left. Here the two LEFT corners
+       (top-left and bottom-left) get the full pill radius, while the two RIGHT
+       corners stay perfectly square — so this piece only rounds on its outer-left
+       edge and butts up flush against the .pill-glass section on its right */
+    position: relative;  /* Positioning context for the ::after highlight pseudo-element below */
+    border: 1px solid rgba(255, 255, 255, 0.08); /* A very faint light outline all the way around */
+    border-right: 1px solid #000; /* Overrides just the right edge with a solid black line — creates a crisp
+                                      seam where this cap meets the glass section */
+    box-shadow:
+      inset 4px 0 8px rgba(0, 0, 0, 0.4),
+      inset 0 2px 4px rgba(255, 255, 255, 0.12),
+      inset 0 -3px 6px rgba(0, 0, 0, 0.9);
+    /* Three stacked INSET (inner) shadows working together to fake 3D depth on a flat
+       CSS shape:
+         1. a shadow pushed in 4px from the left, blurred 8px, dark — darkens the
+            left/inner edge, suggesting curvature
+         2. a shadow pushed down 2px from the top, blurred 4px, light — a subtle top
+            highlight, like light catching the top of a rounded metal surface
+         3. a shadow pushed UP 3px from the bottom (negative value), blurred 6px, very
+            dark — deepens the bottom edge, like a shadow pooling underneath */
+    overflow: hidden;  /* Clips the ::after highlight glow so it doesn't spill outside this rounded shape */
+    z-index: 2;         /* Sits above .pill-glass so their shared seam renders cleanly */
+  }
+
+  /* Cap Top Highlight */
+  .pill-cap::after {
+    /* ::after generates an extra, invisible-in-the-HTML element automatically placed
+       at the end of .pill-cap's content. It's a common CSS trick for adding purely
+       decorative shapes without needing extra <div> tags in your HTML. */
+    content: ''; /* Required for ::before/::after to render at all — even an empty string works,
+                     since the element itself is styled with background/shape rather than text */
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    right: 2px;
+    height: 16px;
+    background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+    /* radial-gradient spreads color outward from a focal point rather than in a
+       straight line. "ellipse at top" means the gradient's shape is an oval,
+       centered at the top of this element, fading from 25%-opacity white at its
+       center out to fully transparent by 70% of the way to the edge — this creates
+       a soft, glossy highlight streak, like light glinting off a curved metal surface */
+    border-radius: 999px;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    /* Changes how this element's colors combine with whatever is layered underneath
+       it, instead of simply painting on top and hiding it. "overlay" boosts contrast —
+       lightening already-light areas and darkening already-dark areas beneath it — so
+       this highlight interacts naturally with the metal gradient below it rather than
+       looking like a flat white smear pasted on top */
+  }
+
+  /* Right Glass Section */
+  .pill-glass {
+    /* The larger, right-hand portion of the pill — a dark "frosted glass" panel that
+       holds the button's text and glows cyan on hover */
+    display: flex;
+    align-items: center;  /* Vertically centers the text inside this section */
+    padding: 0 28px 0 20px; /* Shorthand: 0 top/bottom, 28px right, 20px left — extra right padding gives the
+                                text room to breathe before the pill's rounded right edge */
+    height: 100%;
+    background: linear-gradient(90deg, rgba(14, 17, 23, 0.96) 0%, rgba(8, 10, 15, 0.94) 100%);
+    /* A left-to-right (90deg) gradient between two very dark, almost-opaque navy-black
+       tones. Kept at high opacity (0.94–0.96) rather than more transparent so this
+       section reads as solidly dark regardless of what color page background sits
+       behind it (important since this site's page background is a light "paper" color) */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    /* backdrop-filter blurs whatever is VISUALLY BEHIND this element (through any
+       transparency) — combined with this section's slight transparency, it creates a
+       frosted/smoked glass look rather than a plain flat color. The -webkit- prefixed
+       version is included for Safari compatibility, since backdrop-filter support
+       historically required it there. */
+    border: 1px solid rgba(51, 210, 255, 0.15); /* A faint cyan-tinted border all around, hinting at the glow color
+                                                    even at rest */
+    border-left: none; /* Removes the left border specifically, since that edge butts up against .pill-cap
+                           and already has its own border-right defined there */
+    border-radius: 0 999px 999px 0; /* Only the two RIGHT corners (top-right, bottom-right) are rounded —
+                                        mirrors the cap's left-only rounding so together they form one
+                                        seamless pill shape */
+    position: relative;  /* Positioning context for the ::before reflection pseudo-element and the
+                             .pill-inner-glow child element */
+    box-shadow:
+      inset 0 0 20px rgba(51, 210, 255, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    /* Two inset shadows: a very faint all-around cyan glow bleeding inward, plus a
+       thin 1px light line just inside the top edge for a subtle glass-like highlight */
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); /* Smoothly animates any property change (border color,
+                                                             background, box-shadow) on hover */
+    z-index: 1;
+    overflow: hidden;    /* Clips the ::before reflection and .pill-inner-glow so they stay confined within
+                             this pill shape rather than spilling outside its rounded corners */
+  }
+
+  .pill-btn-wrapper:hover .pill-glass {
+    border-color: rgba(51, 210, 255, 0.4);  /* Border becomes noticeably more cyan/visible on hover */
+    background: linear-gradient(90deg, rgba(16, 22, 32, 0.98) 0%, rgba(8, 12, 20, 0.96) 100%);
+    /* Slightly shifts the gradient toward a cooler, more saturated dark-blue tone and
+       becomes even more opaque on hover */
+    box-shadow:
+      inset 0 0 30px rgba(51, 210, 255, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    /* Both inset shadows intensify — the ambient cyan glow inside the glass grows
+       stronger (20px→30px blur, 0.05→0.15 opacity) and the top highlight brightens */
+  }
+
+  /* Glass Top Edge Reflection */
+  .pill-glass::before {
+    /* A second decorative pseudo-element (this time ::before, which places its
+       generated content at the START of .pill-glass rather than the end — though
+       since it's absolutely positioned, the visual placement here is controlled
+       entirely by the top/left/right/height values below, not by DOM order) */
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0;
+    right: 2px;
+    height: 40%;         /* Covers the top 40% of the glass section's height */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+    /* Fades from a faint white highlight at the very top down to fully transparent —
+       mimics the way light reflects off the upper curve of a glossy or glass surface */
+    border-radius: 0 999px 0 0; /* Rounds only the top-right corner, matching the parent's shape at that corner */
+    pointer-events: none;
+  }
+
+  /* Internal Filament Glow Source */
+  .pill-inner-glow {
+    /* A soft circular glow positioned near the seam between the cap and the glass —
+       named "filament" because the visual metaphor is a lightbulb's glowing filament
+       shining out from just inside the glass */
+    position: absolute;
+    left: -10px;         /* Positioned slightly to the LEFT of the glass section's own edge, so it appears
+                             to originate from underneath/behind the cap seam */
+    top: 50%;
+    transform: translateY(-50%); /* Same vertical-centering trick used elsewhere — shifts up by half its own height */
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(51, 210, 255, 0.4) 0%, transparent 70%);
+    /* A circular gradient starting as semi-opaque cyan at its center and fading to
+       fully transparent by 70% of the way to its edge — a classic soft "glow orb" shape */
+    opacity: 0.6;         /* Even at rest, this glow is partially visible (unlike .pill-bg-glow, which starts
+                              fully hidden) — gives the button a subtle "always slightly powered on" feel */
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    /* "screen" blend mode lightens whatever is beneath it based on this element's
+       brightness — bright areas of the glow (its center) brighten the dark glass
+       strongly, while the fully-transparent edges have no effect. This is what makes
+       the glow look like it's genuinely emitting light through the glass rather than
+       just a flat colored circle painted on top */
+  }
+
+  .pill-btn-wrapper:hover .pill-inner-glow {
+    opacity: 1;    /* Becomes fully visible on hover */
+    width: 60px;   /* Grows from 40px to 60px */
+    height: 60px;
+    background: radial-gradient(circle, rgba(51, 210, 255, 0.7) 0%, transparent 70%);
+    /* Same gradient shape as before, but nearly doubled in opacity (0.4 → 0.7) at its
+       center — the "filament" burns brighter when you hover, as if more current is
+       flowing through it */
+  }
+
+  /* Inner Content Wrapper */
+  .pill-content {
+    /* Wraps the button's visible label text. Exists as its own layer mainly to control
+       stacking order (z-index) above the various glow/reflection effects layered
+       beneath it. */
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 3;    /* Sits above .pill-inner-glow (implicitly lower) and the ::before reflection, ensuring
+                       the text is always readable on top of the visual effects */
+    gap: 10px;      /* Reserved spacing between the text and any icon, if one is added back in later —
+                        currently there's only the text span, so this has no visible effect right now */
+  }
+
+  .pill-text {
+    /* The actual visible label, e.g. "View work" or "Get in touch" */
+    color: rgba(255, 255, 255, 0.8); /* Off-white at 80% opacity rather than pure white — softer, easier on
+                                         the eyes against the dark glass */
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    text-transform: uppercase;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    text-shadow: 0 0 10px rgba(51, 210, 255, 0);
+    /* A cyan text-shadow that starts at 0 opacity (invisible) — set up here purely so
+       the transition below has something to smoothly animate FROM when it becomes
+       visible on hover, rather than popping in abruptly */
+  }
+
+  .pill-btn-wrapper:hover .pill-text {
+    color: #fff;  /* Brightens to full pure white on hover */
+    text-shadow: 0 0 12px rgba(51, 210, 255, 0.6);
+    /* The same cyan shadow from above now becomes visible (0 → 0.6 opacity), creating
+       a soft glow radiating from the text itself — reinforcing the "powered up" feel
+       alongside the glass and filament glow effects */
+  }
+
+  /* .hero has overflow:hidden — pill-bg-glow's -4px inset is small enough
+     to stay within that clip, so no offset adjustment needed here. */
+
+
+  /* ============================================================
+     SECTION BANNER — legacy, kept for reference (unused)
+     A large flush-left heading style with small right-aligned
+     metadata text, styled after magazine section title banners.
+     Not currently used anywhere in the HTML below — the site
+     uses .section-heading (further down) instead for all
+     section titles. Left in the stylesheet in case this style
+     is reintroduced for a future section.
+     ============================================================ */
+
+  .section-banner {
+    display: flex;
+    align-items: baseline; /* Aligns items along their text BASELINE (the invisible line text characters
+                               "sit" on) rather than their visual center — more precise for aligning text
+                               of different sizes than align-items: center would be */
+    justify-content: space-between;
+    padding: 1.5rem 2.5rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .section-banner-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .section-banner-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: right;
+  }
+
+  .section-heading {
+    /* The full-width solid-black banner used at the top of every content section:
+       "Projects:", "Capabilities", "About me.", "Get in touch." This repeating visual
+       element is what gives the page its rhythm as you scroll — each section always
+       opens with this same treatment. */
+    background: var(--ink);   /* Solid black band spanning the entire width of the page */
+    color: var(--paper);      /* Light text color so it's readable against the dark background */
+    padding: 2.5rem;          /* Generous padding on all sides so the heading has room to breathe */
+    font-size: clamp(2rem, 5vw, 3.5rem); /* Fluid sizing that scales with viewport width */
+    font-weight: 700;
+    letter-spacing: -0.03em;  /* Slightly tightened spacing, common for large bold display type */
+    line-height: 1;
+    text-align: center;       /* Centers the heading text horizontally within the black band */
+  }
+
+
+  /* ============================================================
+     PROJECTS GRID
+     A two-column grid of project cards. Each card is an entire
+     <a> anchor tag, so clicking anywhere on the card (not just
+     the text) navigates to that project's link.
+     ============================================================ */
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal-width columns (1fr each = each gets an equal fraction
+                                        of the available space) — project cards sit side by side in pairs */
+  }
+
+  .project-card {
+    /* Styles applied to each individual project card <a> tag */
+    border-right: 0.5px solid var(--rule);
+    border-bottom: 0.5px solid var(--rule); /* Cards are visually separated by these hairline borders rather
+                                                than by gaps/margins between grid cells */
+    padding: 2.5rem;
+    text-decoration: none; /* Removes the default underline that would otherwise appear on this <a> tag */
+    color: inherit;         /* Makes the card's text inherit whatever color its parent has, rather than
+                                showing the browser's default blue "visited/unvisited link" colors */
+    display: block;         /* <a> tags are "inline" by default, meaning they only take up as much width as
+                                their content needs. display: block makes this <a> instead fill its entire
+                                grid cell, so the whole card area is clickable */
+    transition: background 0.2s; /* Smoothly animates the background color change on hover */
+    position: relative;     /* Positioning context for the absolutely-positioned .project-arrow inside it */
+    overflow: hidden;       /* Clips anything that might visually extend past the card's edges */
+  }
+
+  .project-card:nth-child(even) { border-right: none; }
+  /* :nth-child(even) is a pattern-matching pseudo-class that selects every 2nd, 4th,
+     6th... child of its parent — i.e. the cards sitting in the RIGHT column of the
+     two-column grid (cards 02, 04, 06). It removes their right border so there isn't
+     a double-thick line running down the middle of the grid where a left-column
+     card's right border and a right-column card's left border would otherwise overlap. */
+
+  .project-card:hover { background: rgba(10,10,10,0.03); }
+  /* rgba(10,10,10,0.03) is near-black at only 3% opacity — an extremely subtle tint
+     that signals "this is interactive" on hover without feeling heavy or distracting */
+
+  .project-card:hover .project-arrow { transform: translate(4px, -4px); }
+  /* When hovering anywhere over the card, this descendant selector finds the arrow
+     icon INSIDE that specific card and nudges it 4px right and 4px up — a small
+     "this will take you somewhere" motion cue */
+
+  .project-index {
+    /* The small number label at the top of each card: "01", "02", etc. */
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    margin-bottom: 2rem;
+  }
+
+  .project-title {
+    /* The project name heading within each card */
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+
+  .project-tags {
+    /* Flex container holding the small technology "pill" labels (e.g. "PYTHON", "FLASK") */
+    display: flex;
+    flex-wrap: wrap; /* Allows tags to wrap onto additional lines if there isn't enough horizontal
+                         room to fit them all on one line */
+    gap: 6px;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    /* An individual technology tag pill, e.g. "UMAP" or "R" */
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 0.5px solid var(--rule); /* The border itself is what creates the "pill" outline shape here */
+    padding: 3px 8px;
+    color: var(--mid);
+  }
+
+  .project-desc {
+    /* The short paragraph describing the project, beneath the tags */
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.7;
+    max-width: 38ch; /* Keeps lines to roughly 38 characters wide for comfortable reading */
+  }
+
+  .project-arrow {
+    /* The "↗" diagonal arrow icon pinned to the bottom-right corner of each card */
+    position: absolute; /* Positioned relative to .project-card (its nearest position: relative ancestor) */
+    bottom: 2.5rem;
+    right: 2.5rem;
+    font-size: 1.2rem;
+    transition: transform 0.2s; /* Smoothly animates its position when the hover rule above moves it */
+  }
+
+
+  /* ============================================================
+     FEATURED PROJECT CARD — unused, kept for reference
+     A full-width variant of the project card, split into a black
+     visual panel on the left and content on the right — like a
+     double-page magazine spread. Not currently used in the HTML
+     below (all cards use the standard .project-card layout), but
+     kept here in case a featured/hero project card is added later.
+     ============================================================ */
+
+  .project-card.featured {
+    /* .project-card.featured means "an element that has BOTH classes at once" —
+       so this only applies to cards that are tagged with .featured in addition to
+       the base .project-card class */
+    grid-column: 1 / -1; /* Tells this grid item to span from grid line 1 all the way to line -1
+                             (CSS Grid's shorthand for "the last line"), i.e. spans the FULL width
+                             of the grid instead of sitting in just one column */
+    border-right: none;  /* No right border needed since it spans the entire row */
+    display: block;      /* Single-column block layout rather than an internal grid split */
+    padding: 0;          /* Padding removed here since the child panels (.featured-visual,
+                             .featured-content) handle their own padding individually */
+  }
+
+  .featured-visual {
+    /* The solid black visual panel on the left side of a featured card */
+    background: var(--ink);
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1; /* Keeps this above any content that might otherwise bleed through from sections above it */
+  }
+
+  .featured-visual-type {
+    /* Large decorative outline/ghost text inside the featured visual panel, e.g. "VOLNA" */
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 700;
+    color: var(--paper);                          /* Filled with the light paper color */
+    -webkit-text-stroke: 1px rgba(245,243,239,0.25); /* Faint outline adds a bit of extra depth/texture */
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    user-select: none;
+    padding: 2rem;
+  }
+
+  .featured-visual-badge {
+    /* Small "FEATURED — 2026"-style label pinned to the top-left corner of the black panel */
+    position: absolute;
+    top: 2rem; left: 2rem;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,243,239,0.5); /* Semi-transparent light color, readable but understated against the dark panel */
+  }
+
+  .featured-content {
+    /* The content panel on the right side of a featured card — title, tags, description, buttons */
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes the title group to the top and description/buttons to the bottom */
+    border-left: 0.5px solid var(--rule);
+  }
+
+
+  /* ============================================================
+     SKILLS SECTION — dense editorial columns
+     A four-column grid, one column per skill category, styled
+     like a magazine's dense typographic credits page.
+     ============================================================ */
+
+  .skills-section {
+    /* Wraps the entire four-column skills grid */
+    border-bottom: 0.5px solid var(--rule); /* Closes off the section with a rule at the bottom */
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* repeat(4, 1fr) is shorthand for writing "1fr 1fr 1fr 1fr" — four equal-width columns */
+  }
+
+  .skill-col {
+    /* One individual column, e.g. the "Languages" column listing Python, R, etc. */
+    padding: 2.5rem;
+    border-right: 0.5px solid var(--rule); /* Vertical rule separating this column from the next one */
+  }
+
+  .skill-col:last-child {
+    border-right: none;
+    /* :last-child targets only the final matching element among its siblings — here,
+       the last column (Infrastructure) — so it doesn't get a right border, avoiding
+       an unnecessary line at the very right edge of the whole section */
+  }
+
+  .skill-col-title {
+    /* The category label at the top of each column: "LANGUAGES", "FRONTEND", etc. */
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border-bottom: 0.5px solid rgba(240,237,232,0.2); /* NOTE: this first border-bottom declaration is
+                                                            immediately overridden by the second one below it —
+                                                            CSS applies rules in order, and when two rules target
+                                                            the exact same property, the LAST one wins. Left here
+                                                            as leftover from an earlier dark-background version of
+                                                            this section; harmless but has no visible effect. */
+    padding-bottom: 1rem;
+    border-bottom: 0.5px solid var(--rule); /* This is the border-bottom value that actually renders,
+                                                since it comes second */
+  }
+
+  .skill-list {
+    /* The <ul> holding individual skill items beneath each column title */
+    list-style: none; /* Removes the default bullet points */
+    display: flex;
+    flex-direction: column; /* Stacks list items vertically (flex's default is horizontal, so this flips it) */
+    gap: 0.6rem;
+  }
+
+  .skill-list li {
+    /* An individual skill item, e.g. "Python" or "React / Next.js" */
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+
+  /* ============================================================
+     ABOUT SECTION — asymmetric two-column layout
+     A narrower left column and a wider right column, sitting
+     side by side. The left holds the bio paragraph, the right
+     holds the experience timeline.
+     ============================================================ */
+  .about-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Despite the "asymmetric" description above (an artifact of an earlier
+                                        design pass), both columns are currently equal width (1fr each) */
+    min-height: 40vh; /* Ensures this section always has a reasonable minimum height, even with little content */
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .about-left {
+    padding: 3rem 2.5rem;
+    border-right: 0.5px solid var(--rule); /* Vertical divider between the left and right columns */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* With only one child element inside, this doesn't visibly do much right
+                                        now, but would distribute multiple children vertically if more were added */
+  }
+
+.about-right {
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Content starts from the top of this column (the default flex behavior,
+                                     stated explicitly here) */
+  }
+
+  .about-body {
+    /* The bio paragraph: "I work at the intersection of data engineering..." */
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--mid);
+    max-width: 52ch; /* Keeps the paragraph from stretching too wide, for comfortable reading */
+  }
+
+  .about-body strong {
+    /* <strong> tags provide semantic emphasis (screen readers announce them as
+       important). This rule overrides the inherited muted-gray color specifically
+       for text wrapped in <strong> so those words visually pop from the surrounding
+       paragraph, e.g. "data engineering", "machine learning" */
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .about-timeline {
+    /* Container holding all the individual experience rows */
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* No gap between rows — the borders on each .timeline-item (below) handle the visual
+                separation instead of relying on spacing */
+  }
+
+   .timeline-item {
+    /* One row in the experience timeline, e.g. "2025 - Present | Fashion Market Intelligence Platform" */
+    display: grid;
+    grid-template-columns: 6rem 1fr; /* Two columns: a fixed 6rem-wide column for the year, and a flexible
+                                         column that takes up all remaining space for the title/place text */
+    gap: 1.5rem;
+    padding: 1.2rem 0;
+    border-bottom: 0.5px solid var(--rule);
+    align-items: baseline; /* Aligns the year and the title text along their shared text baseline, so they
+                               visually line up even though they're different font sizes */
+  }
+
+  .timeline-year {
+    /* The date range on the left side of each row: "2025 - Present" */
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--mid);
+  }
+
+  .timeline-title {
+    /* The job/project title on the right side of each row */
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .timeline-place {
+    /* The secondary line beneath the title, naming the institution/organization */
+    font-size: 12px;
+    color: var(--mid);
+    margin-top: 2px;
+  }
+
+
+  /* ============================================================
+     CONTACT SECTION
+     Two-column layout: an availability note on the left, and a
+     stack of contact method rows (email, GitHub, LinkedIn,
+     resume) on the right.
+     ============================================================ */
+
+  .contact-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+    min-height: 40vh; /* Gives the section a substantial minimum vertical presence on the page */
+  }
+
+  .contact-left {
+    /* Holds the availability note: "Open to full-time roles, contract work..." */
+    padding: 3rem 2.5rem;
+    border-right: 0.5px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .contact-headline {
+    /* Legacy style for a large stacked "Get in touch." heading that used to live
+       inside .contact-left directly. Now that role is handled by the shared
+       .section-heading banner above this section instead, so this class is
+       currently unused — kept here in case it's needed again later. */
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  .contact-right {
+    /* Holds the four contact method rows: Email, GitHub, LinkedIn, Resume */
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Pushes the rows to the BOTTOM of this column */
+    gap: 1.5rem;
+  }
+
+  .contact-link-row {
+    /* One row showing a label/value pair, e.g. "EMAIL" on the left, the actual
+       email address on the right */
+    display: flex;
+    justify-content: space-between; /* Pushes the label to the far left and the value to the far right */
+    align-items: center;
+    border-top: 0.5px solid var(--rule);
+    padding-top: 1rem;
+  }
+
+  .contact-link-label {
+    /* The left-side label text: "EMAIL", "GITHUB", "LINKEDIN", "RESUME" */
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .contact-link-val {
+    /* The right-side clickable value, e.g. the actual email address or GitHub URL text */
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 0.5px solid transparent;
+    /* A border that's already there but invisible (transparent) at rest. This "reserves"
+       the 0.5px of vertical space it will occupy once it becomes visible on hover — if
+       the border were only ADDED on hover rather than just recolored, the row's total
+       height would shift slightly and cause a small "jump" in the layout */
+    transition: border-color 0.15s; /* Smoothly fades the border from transparent to visible on hover */
+  }
+
+  .contact-link-val:hover { border-color: var(--ink); }
+  /* On hover, the border-color rule above kicks in and the previously-invisible
+     border becomes a visible ink-colored underline, without shifting any layout */
+
+
+  /* ============================================================
+     FOOTER
+     A minimal two-item row at the very bottom of the page:
+     the site name on the left, copyright text on the right.
+     ============================================================ */
+
+  footer {
+    padding: 1.2rem 2.5rem;
+    border-top: 0.5px solid var(--rule);
+    display: flex;
+    justify-content: space-between; /* Pushes the two <p> tags to opposite edges */
+    align-items: center;
+  }
+
+  footer p {
+    /* Both text items in the footer share this same small monospace label style */
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  /* ============================================================
+     ANIMATIONS
+     Entry animations for the hero section's content — elements
+     start invisible and shifted downward, then fade smoothly
+     up into their normal resting position as the page loads.
+     ============================================================ */
+
+  @keyframes fade-up {
+    /* "from" and "to" are shorthand for 0% and 100% respectively when an animation
+       only needs a simple two-point start/end sequence */
+    from { opacity: 0; transform: translateY(20px); }
+    /* Starting state: invisible, and shifted 20px lower than its natural position */
+    to   { opacity: 1; transform: translateY(0); }
+    /* Ending state: fully visible, in its natural position */
+  }
+
+  .fade-in {
+    animation: fade-up 0.6s ease forwards;
+    /* Shorthand: animation: [keyframes-name] [duration] [easing] [fill-mode]
+       forwards — normally, once an animation finishes, the element snaps back to
+       its ORIGINAL (pre-animation) CSS state. "forwards" tells the browser to
+       instead keep displaying the animation's FINAL keyframe state permanently
+       after it completes — otherwise this element would immediately disappear
+       again right after fading in! */
+  }
+
+  /* These three classes reuse the exact same fade-up animation, but each one starts
+     after a slightly longer delay than the last. Applied to different hero elements,
+     this creates a staggered "cascading" entrance where things appear one after
+     another rather than all popping in simultaneously. */
+  .fade-in-delay-1 { animation-delay: 0.1s;  opacity: 0; animation-fill-mode: forwards; animation-name: fade-up; animation-duration: 0.6s; }
+  .fade-in-delay-2 { animation-delay: 0.2s;  opacity: 0; animation-fill-mode: forwards; animation-name: fade-up; animation-duration: 0.6s; }
+  .fade-in-delay-3 { animation-delay: 0.35s; opacity: 0; animation-fill-mode: forwards; animation-name: fade-up; animation-duration: 0.6s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* @media queries apply a block of CSS only when a certain condition is true.
+       prefers-reduced-motion: reduce is an ACCESSIBILITY setting some users turn on
+       at the operating-system level (often due to motion sensitivity or vestibular
+       disorders). When it's on, this rule disables all the fade/animation effects
+       above and makes the affected elements simply appear at full opacity instantly,
+       rather than animating in. */
+    .fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3 {
+      animation: none; opacity: 1;
+    }
+  }
+
+/* ── CLOTH CANVAS — Three.js cloth simulation in hero ── */
+  #cloth-canvas {
+    /* Styles for a <canvas> element that would host a 3D cloth simulation (built with
+       the Three.js library) inside the hero. The canvas itself is currently commented
+       out in the HTML below (search for "cloth-canvas" further down), so this CSS has
+       no visible effect right now — kept in place so re-enabling the feature later is
+       just a matter of un-commenting the HTML and JS, without needing to rewrite the styles. */
+    position: absolute;
+    top: -5;
+    left: 35%;
+    right: 0;
+    bottom: 0;
+    width: 30%;
+    height: 105%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    /* This entire block only applies when the browser viewport is 768px wide or
+       narrower — covering most phones and tablets held in portrait orientation.
+       This is called a "responsive breakpoint." */
+
+    .hero { grid-template-columns: 1fr; }
+    /* Collapses the hero's two-column (2fr 1fr) desktop layout down to a single column,
+       since there isn't enough horizontal room for two columns on a narrow screen */
+
+    .hero-right { display: none; }
+    /* Hides the entire stats panel on mobile — showing the dense stat blocks and
+       decorative type would feel cramped and less useful on a small screen */
+
+    .projects-grid { grid-template-columns: 1fr; }
+    /* Project cards stack in a single column instead of sitting two-across */
+
+    .project-card:nth-child(even) { border-right: 0.5px solid var(--rule); }
+    /* Restores the right border that the desktop layout removed from right-column
+       cards — since every card is now full-width in a single column, every card
+       needs a right border for a consistent boxed appearance */
+
+    .project-card.featured { grid-template-columns: 1fr; }
+    /* The (currently unused) featured card layout also collapses to one column */
+
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    /* Narrows the four skill columns down to two columns of two on smaller screens,
+       rather than cramming four skinny columns side by side */
+
+    .about-section { grid-template-columns: 1fr; }
+    .about-left { border-right: none; border-bottom: 0.5px solid var(--rule); }
+    /* The About section's two columns stack vertically on mobile; the divider line
+       that was vertical on desktop becomes horizontal instead */
+
+    .contact-section { grid-template-columns: 1fr; }
+    .contact-left { border-right: none; border-bottom: 0.5px solid var(--rule); }
+    /* Same vertical-stacking treatment applied to the Contact section */
+
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    /* Slightly tighter padding and link spacing in the nav bar, since there's much
+       less horizontal room to work with on a phone screen */
+  }
+
+</style>
+</head>
+<body>
+
+
+<!-- ============================================================
+     NAVIGATION
+     <nav> is a semantic HTML5 "landmark" element — screen readers
+     use these special tags to let users jump directly to page
+     regions like navigation, main content, or the footer.
+     id="mainNav" gives this specific element a unique identifier
+     so JavaScript can find and reference it later.
+     ============================================================ -->
+<nav id="mainNav">
+  <span class="nav-logo">RJ Newton — Dev</span>
+  <!-- <span> is a generic INLINE element with no semantic meaning of its own —
+       used purely here as a styled text container for the wordmark logo -->
+
+  <ul class="nav-links">
+    <!-- <ul> = "unordered list" — the semantically correct HTML element for a group
+         of navigation links. Screen readers announce this as a list; the CSS rule
+         list-style: none (in the <style> block above) hides the bullet points
+         visually without removing the underlying list semantics -->
+    <li><a href="#projects">Work</a></li>
+    <!-- href="#projects" is an "in-page anchor" link — clicking it scrolls smoothly
+         (thanks to scroll-behavior: smooth on <html>) down to the element elsewhere
+         on this page that has id="projects" -->
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================================
+     HERO SECTION
+     The full-viewport landing area. position: relative (set in
+     the CSS above) makes this the positioning "anchor" for the
+     absolutely-positioned .hero-bg-image and decorative type
+     elements nested inside it.
+     ============================================================ -->
+<section class="hero">
+
+  <!-- Three.js cloth simulation — TEMPORARILY DISABLED, see the large HTML comment
+       block near the end of the <body> for the full JavaScript that would power this. -->
+  <!-- <canvas id="cloth-canvas"></canvas> -->
+
+<!-- ============================================================
+     HERO PORTRAIT IMAGE
+     A single wrapper <div> containing the <img> tag. Positioned
+     absolutely inside the hero, so it sits behind the text
+     content layered on top of it.
+     ============================================================ -->
+
+<div class="hero-bg-image" id="heroBgImage">
+  <img src="IMG_2389.jpg" alt="RJ Newton">
+  <!-- <img> loads the portrait photo. The src path must exactly match the filename
+       sitting in the same folder as this HTML file (e.g. in your GitHub repo).
+       The alt attribute provides a text description for screen readers, and is
+       also what displays if the image file fails to load for any reason. -->
+</div>
+
+  <!-- LEFT COLUMN — name, description, CTA buttons -->
+  <div class="hero-left fade-in">
+    <!-- The fade-in class (defined in <style> above) triggers the CSS entry
+         animation as soon as the page loads -->
+
+    <p class="hero-eyebrow">Software Dev / Data Scientist / Web Dev</p>
+    <!-- <p> = "paragraph" element. Used here for a standalone one-line text unit,
+         which is semantically appropriate even though it's short -->
+
+<h1 class="hero-name fade-in-delay-1">
+  RJ<br>Newton.
+  <span class="hero-name-glitch" aria-hidden="true">RJ<br>Newton.</span>
+</h1>
+    <!-- <h1> = the single most important heading on the page — there should only
+         ever be ONE <h1> per page for both SEO and accessibility reasons.
+         <br> forces a manual line break, so "RJ" and "Newton." stack onto two
+         separate lines rather than wrapping automatically based on screen width.
+         fade-in-delay-1 staggers this element's entrance animation to start
+         0.1 seconds after the eyebrow label above it fades in.
+         The nested <span class="hero-name-glitch"> is the duplicate "ghost" copy
+         of the same text used to create the glitch flicker effect (see the
+         .hero-name-glitch and @keyframes glitch rules in the CSS above).
+         aria-hidden="true" tells screen readers to skip announcing this duplicate
+         text, since it's purely a visual effect layered on top of the real heading. -->
+
+    <p class="hero-desc fade-in-delay-2">
+      Full-stack developer and data scientist. I build systems that process information at scale and interfaces that make complexity readable.
+    </p>
+
+    <div class="hero-cta-row" style="margin-top: 2rem;">
+      <!-- This <div> groups the two call-to-action buttons and applies the
+           .hero-cta-row flex layout (side-by-side with a gap) defined in the CSS.
+           style="margin-top: 2rem;" is an INLINE style — CSS written directly on
+           the HTML element itself rather than in the <style> block. It works
+           identically to a stylesheet rule but only applies to this one element. -->
+
+      <a href="#projects" class="pill-btn-wrapper">
+        <!-- This whole <a> tag is the clickable "View work" button. Every element
+             nested inside it below is one of the layered visual pieces that make up
+             the pill/battery-glow effect (see the "BUTTONS" section in the CSS above
+             for a full breakdown of what each piece does). -->
+        <div class="pill-bg-glow"></div>
+        <!-- Empty <div> — has no text content, its entire visual appearance comes
+             from CSS background/blur/opacity, styled as a soft halo behind the pill -->
+        <div class="pill-container">
+          <div class="pill-cap"></div>
+          <!-- Empty <div> — the metal-looking rounded cap on the left end of the pill,
+               entirely styled via its CSS gradient/shadow rules -->
+          <div class="pill-glass">
+            <div class="pill-inner-glow"></div>
+            <!-- Empty <div> — the soft cyan glow "filament" glow source -->
+            <div class="pill-content">
+              <span class="pill-text">View work</span>
+              <!-- The actual visible button label text -->
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#contact" class="pill-btn-wrapper" style="margin-left: 1rem;">
+        <!-- The second CTA button, "Get in touch" — identical structure to the button
+             above, just with different link target (#contact) and label text -->
+        <div class="pill-bg-glow"></div>
+        <div class="pill-container">
+          <div class="pill-cap"></div>
+          <div class="pill-glass">
+            <div class="pill-inner-glow"></div>
+            <div class="pill-content">
+              <span class="pill-text">Get in touch</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN — stats and decorative vertical type -->
+  <div class="hero-right fade-in-delay-2">
+
+    <div class="hero-stats">
+      <!-- Three stat items stacked vertically (via flex-direction: column in the CSS) -->
+
+      <div class="hero-stat">
+        <p class="hero-stat-num">4+</p>
+        <p class="hero-stat-label">Years experience</p>
+      </div>
+      <div class="hero-stat">
+        <p class="hero-stat-num">7</p>
+        <p class="hero-stat-label">Languages (Python, R, HTML, JavaScript, CSS, SQL, TypeScript)</p>
+      </div>
+      <div class="hero-stat">
+        <p class="hero-stat-num">2</p>
+        <p class="hero-stat-label">Research Domains</p>
+      </div>
+    </div>
+
+    <div class="hero-vertical-type">DEV</div>
+    <!-- Purely decorative text. The CSS rotates this 90° and renders it as a faint
+         outline-only "ghost type" effect. pointer-events: none and user-select: none
+         (both set in the CSS above) mean this text can't be clicked or highlighted —
+         it's there to be seen, not interacted with. -->
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PROJECTS SECTION
+     id="projects" is the scroll target for both the nav bar's
+     "Work" link and the hero's "View work" button.
+     ============================================================ -->
+<section id="projects">
+  <div class="section-heading">Projects:</div>
+  <div class="projects-grid">
+
+    <!-- ── CARD 01: VOLNA ── -->
+    <a href="https://volnatrends.com/" target="_blank" class="project-card">
+      <!-- target="_blank" opens this link in a NEW browser tab, rather than
+           navigating away from the current portfolio page -->
+      <p class="project-index">01</p>
+      <h3 class="project-title" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">Fashion Market<br>Intelligence Platform</h3>
+      <!-- <h3> = a "level 3" heading — used here instead of <h1>/<h2> since this is
+           a sub-heading within the page's structure, nested below the main <h1> and
+           this section's .section-heading. The inline style overrides this card's
+           font-size specifically, making it larger than the other project titles
+           since it's the first/primary project. -->
+      <div class="project-tags">
+        <span class="tag">Flask</span>
+        <span class="tag">Python</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">PostgreSQL</span>
+        <span class="tag">Librosa</span>
+      </div>
+      <p class="project-desc">Relational database platform tracking hundreds of brands, 1,600+ collections, and hundreds of aesthetic tags across a multitude of interconnected tables. Features Google Trends integration and style-matching methodology rooted in consumer psychology.</p>
+      <span class="project-arrow">↗</span>
+      <!-- "↗" is a single Unicode arrow character (not an image or icon font) —
+           CSS positions it absolutely in the card's bottom-right corner and
+           animates it diagonally on hover -->
+    </a>
+
+    <!-- ── CARD 02: DOLPHIN UMAP CLASSIFIER ── -->
+    <a href="https://github.com/rjjj444/Dolphin-UMAP-Model" target="_blank" class="project-card">
+      <p class="project-index">02</p>
+      <h3 class="project-title">Dolphin UMAP<br>Classifier</h3>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">UMAP</span>
+        <span class="tag">Librosa</span>
+        <span class="tag">Scikit-learn</span>
+      </div>
+      <p class="project-desc">Acoustic embedding pipeline for dolphin vocalizations. Adapted from meerkat vocalization research with original RI/ARI metrics, modular flat scripts, and bandpass filtering retuned to 300–3000 Hz.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <!-- ── CARD 03: DOLPHIN CNN WHISTLE DETECTOR ── -->
+    <a href="https://github.com/rjjj444" target="_blank" class="project-card">
+      <p class="project-index">03</p>
+      <h3 class="project-title">Dolphin Whistle<br>CNN Detector</h3>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">TensorFlow</span>
+        <span class="tag">Librosa</span>
+        <span class="tag">Raven Pro</span>
+      </div>
+      <p class="project-desc">CNN-based whistle detection model integrating Raven Pro selection tables and the SEANOE public dataset. Achieves strong early detection results on held-out dolphin vocalization recordings.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <!-- ── CARD 04: SEM REPLICATION STUDY ── -->
+    <a href="https://github.com/rjjj444" target="_blank" class="project-card">
+      <p class="project-index">04</p>
+      <h3 class="project-title">Blind Box SEM<br>Replication Study</h3>
+      <div class="project-tags">
+        <span class="tag">R</span>
+        <span class="tag">SEM</span>
+        <span class="tag">Psychology</span>
+        <span class="tag">Statistics</span>
+      </div>
+      <p class="project-desc">Structural equation model replication of Zhang & Zhang's blind box consumer behavior paper (Frontiers in Psychology), omitting the functional value variable to test model robustness.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <!-- ── CARD 05: CREATIVE PORTFOLIO SITE ── -->
+    <a href="https://rjnewton.com" target="_blank" class="project-card">
+      <p class="project-index">05</p>
+      <h3 class="project-title">RJ Newton<br>Creative Portfolio</h3>
+      <div class="project-tags">
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">GSAP</span>
+      </div>
+      <p class="project-desc">Hand-coded editorial portfolio site for modeling, creative direction, and styling work. Features cinematic background compositing, GSAP parallax, and individual campaign pages.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <!-- ── CARD 06: THIS DEV PORTFOLIO ── -->
+    <a href="https://rjncodes.dev" target="_blank" class="project-card">
+      <p class="project-index">06</p>
+      <h3 class="project-title">RJ Newton<br>Dev Portfolio</h3>
+      <div class="project-tags">
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">GitHub Pages</span>
+      </div>
+      <p class="project-desc">This site. Hand-coded editorial portfolio inspired by fashion magazine design systems — Balenciaga campaign typography, Marni spread grid structure, and Mingyu magazine banner treatment.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+   </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     ABOUT SECTION
+     id="about" is the scroll target for the nav bar's "About" link.
+     ============================================================ -->
+
+ <section id="about">
+  <div class="section-heading">About me.</div>
+  <div class="about-section">
+
+    <div class="about-left">
+      <p class="about-body">
+        I work at the intersection of <strong>data engineering</strong>,
+        <strong>machine learning</strong>, and <strong>frontend design</strong>.
+        I'm interested in systems that handle real complexity — not just
+        technically, but in terms of what they reveal to the people using
+        them.<br><br>
+        Having studied cognitive psychology with an emphasis on data analytics
+        at UC San Diego while building in the data and ML space, I think the
+        most interesting problems sit between disciplines: where behavioral
+        science meets data, where visual design meets systems architecture.
+
+        <!-- <strong> provides semantic emphasis (screen readers announce it with
+             extra stress) — the CSS rule .about-body strong overrides the inherited
+             muted gray color so these terms visually stand out from the surrounding
+             paragraph text as well -->
+      </p>
+    </div>
+
+    <div class="about-right">
+      <div class="about-timeline">
+
+       <!-- Experience timeline — each row below is one .timeline-item: a two-column
+            mini-grid of "year on the left" | "title and place on the right" -->
+        <div class="timeline-item">
+          <span class="timeline-year">Placeholder</span>
+          <!-- <span> containing just the year — an inline element occupying the
+               first grid column defined in .timeline-item's CSS -->
+          <div>
+            <p class="timeline-title">Placeholder</p>
+            <p class="timeline-place">Placeholder</p>
+          </div>
+        </div>
+
+      </div> <!-- closes about-timeline -->
+    </div> <!-- closes about-right -->
+
+  </div> <!-- closes about-section -->
+</section> <!-- closes #about -->
+
+<!-- ============================================================
+     CONTACT SECTION
+     id="contact" is the scroll target for the nav bar's "Contact"
+     link and the hero's "Get in touch" button.
+     ============================================================ -->
+<section id="contact">
+  <div class="section-heading">Get in touch.</div>
+  <div class="contact-section">
+
+  <div class="contact-left">
+    <!-- Reuses the .hero-desc class from the CSS above for a consistent muted
+         paragraph style, with a couple of one-off inline style overrides for spacing -->
+
+    <p class="hero-desc" style="border-top: 0.5px solid var(--rule); padding-top: 1.5rem; margin-top: 1.5rem;">
+      Open to full-time roles, contract work, and research collaborations. I typically respond within 24 hours.
+    </p>
+  </div>
+
+  <div class="contact-right">
+
+    <div class="contact-link-row">
+      <span class="contact-link-label">Email</span>
+      <a href="mailto:rj.j.newton@gmail.com" class="contact-link-val">rj.j.newton@gmail.com</a>
+      <!-- href="mailto:..." is a special link protocol that opens the visitor's
+           default email application with this address pre-filled in the "To" field -->
+    </div>
+
+     </div><!-- closes contact-right -->
+  </div><!-- closes contact-section -->
+</section><!-- closes #contact -->
+
+
+<!-- ============================================================
+     FOOTER
+     <footer> is a semantic HTML5 landmark element — screen
+     readers identify it specifically as the page's footer region.
+     ============================================================ -->
+<footer>
+  <p>Dvorets Planning</p>
+  <p>© 2026. All rights reserved.</p>
+</footer>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+     Placed at the very end of <body> (rather than in <head>) for
+     two reasons: (1) every HTML element above this point already
+     exists in the DOM by the time these scripts run, so they can
+     safely find and reference elements by ID/class without errors,
+     and (2) loading scripts here doesn't block the browser from
+     rendering the visible page content first.
+     ============================================================ -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!-- Loads the GSAP (GreenSock Animation Platform) library from a CDN (Content
+     Delivery Network) — a third-party hosted copy of the file, rather than one
+     stored in this project's own files. GSAP powers the smooth parallax animation
+     triggered by mouse movement, in the inline <script> block further down. It
+     must load and finish executing BEFORE that script runs, since that script
+     calls a function (gsap.to()) that only exists once this library is loaded. -->
+
+<!--
+     TEMPORARILY DISABLED: Three.js library + cloth simulation script.
+     This entire block — from the <script src="...three.min.js"> tag through
+     the full simulation code below it — is wrapped in ONE single HTML comment,
+     so none of it currently executes. To restore the cloth effect: delete the
+     two comment-wrapper lines immediately before and after this whole block,
+     and also un-comment the <canvas id="cloth-canvas"> element up in the hero
+     section above.
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  // An "IIFE" (Immediately Invoked Function Expression) — a function that's
+  // defined and called in the same breath, via the () at the very end. This is a
+  // common pattern for keeping all these variables (canvas, renderer, scene, etc.)
+  // contained in their own private scope, so they don't leak into and potentially
+  // clash with variables elsewhere in the page's global JavaScript.
+
+  const canvas = document.getElementById('cloth-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  function getSize() { return { w: canvas.clientWidth, h: canvas.clientHeight }; }
+  let { w, h } = getSize();
+  renderer.setSize(w, h, false);
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 1000);
+  camera.position.set(0, 0, 55);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+  const key = new THREE.DirectionalLight(0xffffff, 1.1);
+  key.position.set(6, 10, 8);
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0xdddddd, 0.35);
+  fill.position.set(-5, -4, 5);
+  scene.add(fill);
+  const COLS = 32, ROWS = 26, REST = 0.38, GRAVITY = -0.007, DAMPING = 0.986, ITERS = 10;
+  const CLOTH_W = COLS * REST, CLOTH_H = ROWS * REST;
+  const N = ROWS * COLS;
+  const px = new Float32Array(N), py = new Float32Array(N), pz = new Float32Array(N);
+  const ox = new Float32Array(N), oy = new Float32Array(N), oz = new Float32Array(N);
+  const pin = new Uint8Array(N);
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const i = r * COLS + c;
+      px[i] = ox[i] = c * REST - CLOTH_W / 2;
+      py[i] = oy[i] = -r * REST + CLOTH_H / 2;
+      pz[i] = oz[i] = 0;
+      pin[i] = r === 0 ? 1 : 0;
+    }
+  }
+  const cA = [], cB = [], cLen = [];
+  function addC(a, b, len) { cA.push(a); cB.push(b); cLen.push(len); }
+  const D = REST, DS = REST * Math.SQRT2, D2 = REST * 2;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const i = r * COLS + c;
+      if (c < COLS - 1) addC(i, i + 1, D);
+      if (r < ROWS - 1) addC(i, i + COLS, D);
+      if (c < COLS-1 && r < ROWS-1) addC(i, i+COLS+1, DS);
+      if (c > 0 && r < ROWS-1) addC(i, i+COLS-1, DS);
+      if (c < COLS-2) addC(i, i + 2, D2);
+      if (r < ROWS-2) addC(i, i + COLS * 2, D2);
+    }
+  }
+  const NC = cA.length;
+  const iCA = new Int32Array(cA), iCB = new Int32Array(cB), fCL = new Float32Array(cLen);
+  const verts = new Float32Array(N * 3), uvArr = new Float32Array(N * 2), idxArr = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const i = r * COLS + c;
+      uvArr[i*2] = c / (COLS-1);
+      uvArr[i*2+1] = 1 - r / (ROWS-1);
+    }
+  }
+  for (let r = 0; r < ROWS-1; r++) {
+    for (let c = 0; c < COLS-1; c++) {
+      const a = r*COLS+c, b = a+1, d = a+COLS, e = d+1;
+      idxArr.push(a,b,d, b,e,d);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  const posAttr = new THREE.BufferAttribute(verts, 3);
+  posAttr.setUsage(THREE.DynamicDrawUsage);
+  geo.setAttribute('position', posAttr);
+  geo.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
+  geo.setIndex(idxArr);
+  const mat = new THREE.MeshPhongMaterial({ color: 0x111111, specular: 0x999999, shininess: 55, side: THREE.DoubleSide, flatShading: false });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = 0.12;
+  mesh.position.set(-1.5, 12.0, 0);
+  scene.add(mesh);
+  let mx = 9999, my = 9999;
+  window.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    if (e.clientX < rect.left) { mx = 9999; return; }
+    mx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    my = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  });
+  const mouseWorld = new THREE.Vector3();
+  const ray = new THREE.Raycaster();
+  let t = 0;
+  function simulate() {
+    t += 0.016;
+    for (let i = 0; i < N; i++) {
+      if (pin[i]) continue;
+      const vx = (px[i] - ox[i]) * DAMPING;
+      const vy = (py[i] - oy[i]) * DAMPING;
+      const vz = (pz[i] - oz[i]) * DAMPING;
+      const c = i % COLS;
+      const r = (i / COLS) | 0;
+      const windX = (Math.sin(t * 1.1 + c * 0.28) * 0.0035 + Math.sin(t * 0.6 + r * 0.35) * 0.0020);
+      const windZ = (Math.cos(t * 0.9 + c * 0.22) * 0.0055 + Math.cos(t * 1.4 + r * 0.18) * 0.0025);
+      ox[i] = px[i]; oy[i] = py[i]; oz[i] = pz[i];
+      px[i] += vx + windX;
+      py[i] += vy + GRAVITY;
+      pz[i] += vz + windZ;
+    }
+    if (mx < 9000) {
+      ray.setFromCamera({ x: mx, y: my }, camera);
+      const denom = ray.ray.direction.z;
+      if (Math.abs(denom) > 0.0001) {
+        const t_ = -ray.ray.origin.z / denom;
+        mouseWorld.copy(ray.ray.origin).addScaledVector(ray.ray.direction, t_);
+      }
+      const RADIUS = 2.0, FORCE = 0.07;
+      const localX = mouseWorld.x - mesh.position.x;
+      const localY = mouseWorld.y - mesh.position.y;
+      for (let i = 0; i < N; i++) {
+        if (pin[i]) continue;
+        const dx = px[i] - localX, dy = py[i] - localY;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < RADIUS && d > 0.001) {
+          const f = (1 - d / RADIUS) * FORCE;
+          px[i] += dx / d * f;
+          py[i] += dy / d * f;
+          pz[i] += f * 0.6;
+        }
+      }
+    }
+    for (let iter = 0; iter < ITERS; iter++) {
+      for (let k = 0; k < NC; k++) {
+        const a = iCA[k], b = iCB[k];
+        const dx = px[b] - px[a], dy = py[b] - py[a], dz = pz[b] - pz[a];
+        const d = Math.sqrt(dx*dx + dy*dy + dz*dz) || 0.0001;
+        const cor = (d - fCL[k]) / d * 0.5;
+        const cx = dx * cor, cy = dy * cor, cz = dz * cor;
+        if (!pin[a]) { px[a] += cx; py[a] += cy; pz[a] += cz; }
+        if (!pin[b]) { px[b] -= cx; py[b] -= cy; pz[b] -= cz; }
+      }
+    }
+    for (let i = 0; i < N; i++) {
+      verts[i*3] = px[i]; verts[i*3+1] = py[i]; verts[i*3+2] = pz[i];
+    }
+    posAttr.needsUpdate = true;
+    geo.computeVertexNormals();
+  }
+  function animate() { requestAnimationFrame(animate); simulate(); renderer.render(scene, camera); }
+  animate();
+  window.addEventListener('resize', () => {
+    const cw = canvas.clientWidth, ch = canvas.clientHeight;
+    camera.aspect = cw / ch;
+    camera.updateProjectionMatrix();
+    renderer.setSize(cw, ch, false);
+  });
+})();
+</script>
+-->
+
+<script>
+
+  /*
+  // ── HERO IMAGE FADE-IN ──────────────────────────────────────────────────────
+  // Goal: keep the portrait image invisible (opacity: 0, set in the CSS) until
+  // it has actually finished downloading, then trigger the 2-second CSS fade-in
+  // transition — avoiding a jarring "pop-in" of a half-loaded image.
+
+  const heroBgImage = document.getElementById('heroBgImage');
+  // document.getElementById() searches the entire page (the DOM — "Document Object
+  // Model", the browser's internal tree-like representation of the HTML) for the
+  // one element with id="heroBgImage", and stores a reference to it in this
+  // variable. Doing this once and reusing the variable is more efficient than
+  // searching the DOM again every time we need that element.
+
+  const img = heroBgImage.querySelector('img');
+  // querySelector() searches WITHIN a given element (rather than the whole page)
+  // for the first match to a CSS-style selector — here, the first <img> tag nested
+  // inside heroBgImage. Since the <img> is already written directly in the HTML,
+  // the browser automatically starts downloading it as soon as the page loads; we
+  // just need this variable as a reference so we can check on its loading status.
+
+  if (img.complete) {
+      heroBgImage.classList.add('loaded');
+  } else {
+      img.onload = () => heroBgImage.classList.add('loaded');
+  }
+  // This if/else handles a timing edge case:
+  //   img.complete is a built-in property that's TRUE if the browser has ALREADY
+  //   finished loading the image by the time this script runs (e.g. because it was
+  //   small and fast, or served from the browser's cache from a previous visit).
+  //   In that case, we can add the 'loaded' class immediately — no need to wait.
+  //
+  //   Otherwise (the image is still downloading), we set up img.onload — a
+  //   function that the browser will automatically call the MOMENT the image
+  //   finishes loading, whenever that happens.
+  //
+  // () => classList.add(...) is an "arrow function" — modern JavaScript shorthand
+  // for writing function() { ... }. It's used here to define what should run when
+  // onload eventually fires.
+  //
+  // classList.add('loaded') adds the CSS class "loaded" onto the wrapper div. This
+  // is what triggers the .hero-bg-image.loaded img CSS rule (defined in the <style>
+  // block above), which sets the <img>'s opacity to 1 — and because that rule also
+  // has a transition set, the change animates smoothly over 2 seconds rather than
+  // snapping instantly into view.
+
+  */
+
+
+  // ── NAV SCROLL TRANSITION ───────────────────────────────────────────────────
+  // Goal: toggle the .scrolled class on the nav bar once the user has scrolled
+  // down past roughly the height of the hero section.
+
+  const nav = document.getElementById('mainNav');
+  // Grabs a reference to the <nav> element so we can add/remove classes on it below
+
+  window.addEventListener('scroll', () => {
+    // window.addEventListener(eventType, callbackFunction) is how you tell the
+    // browser "run this function whenever a particular event happens." The
+    // 'scroll' event fires repeatedly and continuously as the user scrolls the
+    // page — not just once at the start or end.
+
+    const heroHeight = window.innerHeight;
+    // window.innerHeight is the height (in pixels) of the currently visible browser
+    // viewport. Since the hero section's CSS sets min-height: 100vh (100% of the
+    // viewport height), this value is used as a stand-in/approximation for the
+    // hero's actual rendered height.
+
+    if (window.scrollY > heroHeight * 0.85) {
+      // window.scrollY tells us exactly how many pixels the page has been scrolled
+      // down vertically from the very top (0 = still at the top of the page).
+      // The threshold here is set at 85% of the hero's height — slightly BEFORE
+      // the hero section fully ends — so the nav's visual transition (if one were
+      // added later) would kick in a touch early and feel natural rather than
+      // abrupt or delayed.
+      nav.classList.add('scrolled');
+      // Adds the .scrolled class, which (per the CSS above) currently keeps the
+      // same paper background — but having this hook in place means future style
+      // changes triggered by scrolling only require editing the CSS, not this script.
+    } else {
+      nav.classList.remove('scrolled');
+      // Once the user scrolls back UP above that 85% threshold, the .scrolled
+      // class is removed again, returning the nav to its base state.
+    }
+  });
+
+
+</script>
+
+</body>
+</html>
