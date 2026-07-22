@@ -27,7 +27,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--paper);
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     color: var(--ink);
     font-family: var(--serif-disp);
     font-size: 15px;
@@ -110,19 +110,53 @@
     padding-top: 80px;
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 200px 1fr 400px;
     position: relative;
     z-index: 10;
     border-bottom: 0.5px solid var(--rule);
     overflow: hidden;
-    background: var(--paper);
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  }
+
+  .hero-sidebar {
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-right: 0.5px solid var(--rule);
+  }
+
+  .hero-sidebar-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    cursor: pointer;
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+
+  .hero-sidebar-item:hover {
+    color: var(--ink);
+  }
+
+  .hero-center {
+    padding: 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 4;
   }
 
   .hero-left {
-    padding: 3rem 2.5rem 3rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
     position: relative;
     z-index: 4;
   }
@@ -138,69 +172,56 @@
 
   .hero-name {
     position: relative;
-    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-size: clamp(3.5rem, 7vw, 5rem);
     font-weight: 700;
-    line-height: 0.92;
+    line-height: 0.95;
     letter-spacing: -0.03em;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     color: var(--ink);
-  }
-
-  .hero-name-glitch {
-    display: none;
   }
 
   .hero-desc {
     font-size: 14px;
     color: var(--mid);
-    max-width: 28ch;
+    max-width: 35ch;
     line-height: 1.7;
-    border-top: 0.5px solid var(--rule);
-    padding-top: 1.5rem;
+    margin-bottom: 2rem;
+    border: none;
+    padding: 0;
   }
 
   .hero-right {
+    padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 3rem 2.5rem;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    z-index: 4;
-    border-left: 0.5px solid var(--rule);
-    padding-left: 2.5rem;
+    z-index: 3;
   }
 
-  .hero-vertical-type {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    font-size: clamp(5rem, 12vw, 10rem);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 0.88;
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(245,245,245,0.15);
-    pointer-events: none;
+  .hero-bg-image {
     position: absolute;
-    right: 2rem;
-    top: 60%;
-    transform: translateY(-50%);
-    user-select: none;
+    inset: 0;
+    display: none;
   }
 
   .hero-stats {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-left: auto;
+    flex-direction: row;
+    gap: 3rem;
+    margin-top: 2rem;
+    justify-content: center;
   }
 
   .hero-stat {
-    border-top: 0.5px solid var(--rule);
-    padding-top: 1rem;
+    border-top: none;
+    padding-top: 0;
+    text-align: center;
   }
 
   .hero-stat-num {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1;
@@ -209,11 +230,15 @@
 
   .hero-stat-label {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--mid);
     margin-top: 4px;
+  }
+
+  .hero-vertical-type {
+    display: none;
   }
 
   .hero-cta-row {
@@ -289,6 +314,14 @@
     display: none;
   }
 
+  #portfolio {
+    display: none;
+  }
+
+  .timeline-item {
+    display: none;
+  }
+
   .section-heading {
     background: #0a0a0a;
     color: #F5F5F5;
@@ -304,6 +337,7 @@
   .projects-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    background: var(--paper);
   }
 
   .project-card {
@@ -316,11 +350,12 @@
     transition: background 0.2s;
     position: relative;
     overflow: hidden;
+    background: var(--paper);
   }
 
   .project-card:nth-child(even) { border-right: none; }
 
-  .project-card:hover { background: rgba(10,10,10,0.03); }
+  .project-card:hover { background: rgba(245,245,245,0.03); }
 
   .project-card:hover .project-arrow { transform: translate(4px, -4px); }
 
@@ -374,6 +409,7 @@
 
   .skills-section {
     border-bottom: 0.5px solid var(--rule);
+    background: var(--paper);
   }
 
   .skills-grid {
@@ -416,6 +452,7 @@
     grid-template-columns: 1fr 1fr;
     min-height: 40vh;
     border-bottom: 0.5px solid var(--rule);
+    background: var(--paper);
   }
 
   .about-left {
@@ -424,6 +461,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background: var(--paper);
   }
 
   .about-right {
@@ -431,6 +469,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    background: var(--paper);
   }
 
   .about-body {
@@ -482,6 +521,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     min-height: 40vh;
+    background: var(--paper);
   }
 
   .contact-left {
@@ -490,6 +530,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background: var(--paper);
   }
 
   .contact-right {
@@ -498,6 +539,7 @@
     flex-direction: column;
     justify-content: flex-end;
     gap: 1.5rem;
+    background: var(--paper);
   }
 
   .contact-link-row {
@@ -533,6 +575,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: var(--paper);
   }
 
   footer p {
@@ -564,7 +607,10 @@
 
   @media (max-width: 768px) {
     .hero { grid-template-columns: 1fr; }
+    .hero-sidebar { display: none; }
     .hero-right { display: none; }
+    .hero-center { padding: 2rem 1.5rem; }
+    .hero-stats { gap: 1.5rem; }
     .projects-grid { grid-template-columns: 1fr; }
     .project-card:nth-child(even) { border-right: 0.5px solid var(--rule); }
     .skills-grid { grid-template-columns: 1fr 1fr; }
@@ -595,47 +641,25 @@
   <img src="IMG_2389.jpg" alt="Luxury Event Celebration">
 </div>
 
-  <div class="hero-left fade-in">
-    <p class="hero-eyebrow">Luxury Events / Bespoke Design / Curated Experiences</p>
+  <div class="hero-sidebar fade-in">
+    <a href="#portfolio" class="hero-sidebar-item">Portfolio</a>
+    <a href="#services" class="hero-sidebar-item">Services</a>
+    <a href="#about" class="hero-sidebar-item">About</a>
+    <a href="#contact" class="hero-sidebar-item">Contact</a>
+  </div>
 
-<h1 class="hero-name fade-in-delay-1">
-  Dvorets<br>Planning.
-  <span class="hero-name-glitch" aria-hidden="true">Dvorets<br>Planning.</span>
-</h1>
+  <div class="hero-center fade-in-delay-1">
+    <p class="hero-eyebrow">Bespoke Luxury Events</p>
+    <h1 class="hero-name">Dvorets<br>Planning</h1>
+    <p class="hero-desc">Curated celebrations at the intersection of refined aesthetics and meticulous execution. We transform visions into immersive experiences that resonate with elegance and intention.</p>
 
-    <p class="hero-desc fade-in-delay-2">
-      Curated celebrations at the intersection of refined aesthetics and meticulous execution. We transform visions into immersive experiences that resonate with elegance and intention.
-    </p>
-
-    <div class="hero-cta-row" style="margin-top: 2rem;">
+    <div class="hero-cta-row" style="margin-bottom: 2rem;">
       <a href="#portfolio" class="pill-btn-wrapper">View Events</a>
       <a href="#contact" class="pill-btn-wrapper" style="margin-left: 1rem;">Inquire</a>
     </div>
-  </div>
 
   <div class="hero-right fade-in-delay-2">
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Curated Event Planning</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Event Consultation</p>
-      </div>
-      <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Catering Services</p>
-      </div>
-    </div>
-         <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Floral Arrangements</p>
-      </div>
-    </div>
-
   </div>
-</section>
 
 
 <section id="services">
@@ -682,6 +706,7 @@
       <div class="skill-col">
         <h3 class="skill-col-title">Specialties</h3>
         <ul class="skill-list">
+          <li>Luxury Weddings</li>
           <li>Corporate Events</li>
           <li>Private Galas</li>
           <li>Destination Events</li>
@@ -694,19 +719,20 @@
   </div>
 </section>
 
+
 <section id="about">
   <div class="section-heading">About</div>
   <div class="about-section">
-
+ <p class="about-body">
+        Dvorets Planning creates <strong>bespoke celebrations</strong> that honor both <strong>refined aesthetics</strong> and <strong>flawless execution</strong>. We believe luxury lies not just in opulence, but in thoughtful details that create genuine connection.<br><br>
+        Every event is a custom composition — conceptualized from first conversation through final moment. We collaborate with architects, artisans, and tastemakers to transform visions into unforgettable experiences that resonate long after the evening ends.
+      </p>
+   
     <div class="about-left">
       <p class="about-body">
         Dvorets Planning creates <strong>bespoke celebrations</strong> that honor both <strong>refined aesthetics</strong> and <strong>flawless execution</strong>. We believe luxury lies not just in opulence, but in thoughtful details that create genuine connection.<br><br>
         Every event is a custom composition — conceptualized from first conversation through final moment. We collaborate with architects, artisans, and tastemakers to transform visions into unforgettable experiences that resonate long after the evening ends.
       </p>
-    </div>
-   
-
-      </div>
     </div>
 
   </div>
@@ -737,7 +763,7 @@
 
     <div class="contact-link-row">
       <span class="contact-link-label">Phone</span>
-      <a href="tel:+1234567890" class="contact-link-val">+1 (831) 588-9341</a>
+      <a href="tel:+1234567890" class="contact-link-val">+1 (234) 567-890</a>
     </div>
 
      </div>
