@@ -125,8 +125,9 @@
   .hero {
     padding-top: 80px;
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: 200px 1fr 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     z-index: 10;
     border-bottom: 0.5px solid var(--rule);
@@ -141,6 +142,17 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+    position: relative;
+    z-index: 4;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .hero-left {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     position: relative;
     z-index: 4;
   }
@@ -176,7 +188,7 @@
 
   .hero-right {
     padding: 0;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -402,6 +414,12 @@
     font-weight: 500;
   }
 
+  .about-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
   .timeline-item {
     display: none;
   }
@@ -509,11 +527,16 @@
   }
 
   @media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; }
+    .hero { padding-top: 80px; }
+    .hero-sidebar { display: none; }
     .hero-right { display: none; }
     .hero-center { padding: 2rem 1.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card:nth-child(even) { border-right: 0.5px solid var(--rule); }
     .skills-grid { grid-template-columns: 1fr 1fr; }
     .about-section { grid-template-columns: 1fr; }
+    .about-left { border-right: none; border-bottom: 0.5px solid var(--rule); }
     .contact-section { grid-template-columns: 1fr; }
     .contact-left { border-right: none; border-bottom: 0.5px solid var(--rule); }
     nav { padding: 1rem 1.5rem; }
