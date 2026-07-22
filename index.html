@@ -207,11 +207,7 @@
   }
 
   .hero-stats {
-    display: flex;
-    flex-direction: row;
-    gap: 3rem;
-    margin-top: 2rem;
-    justify-content: center;
+    display: none;
   }
 
   .hero-stat {
@@ -266,62 +262,6 @@
     background: #d0d0d0;
   }
 
-  .pill-bg-glow {
-    display: none;
-  }
-
-  .pill-container {
-    display: none;
-  }
-
-  .pill-cap {
-    display: none;
-  }
-
-  .pill-cap::after {
-    display: none;
-  }
-
-  .pill-glass {
-    display: none;
-  }
-
-  .pill-btn-wrapper:hover .pill-glass {
-    display: none;
-  }
-
-  .pill-glass::before {
-    display: none;
-  }
-
-  .pill-inner-glow {
-    display: none;
-  }
-
-  .pill-btn-wrapper:hover .pill-inner-glow {
-    display: none;
-  }
-
-  .pill-content {
-    display: none;
-  }
-
-  .pill-text {
-    display: none;
-  }
-
-  .pill-btn-wrapper:hover .pill-text {
-    display: none;
-  }
-
-  #portfolio {
-    display: none;
-  }
-
-  .timeline-item {
-    display: none;
-  }
-
   .section-heading {
     background: #0a0a0a;
     color: #F5F5F5;
@@ -337,7 +277,6 @@
   .projects-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background: var(--paper);
   }
 
   .project-card {
@@ -350,7 +289,6 @@
     transition: background 0.2s;
     position: relative;
     overflow: hidden;
-    background: var(--paper);
   }
 
   .project-card:nth-child(even) { border-right: none; }
@@ -409,7 +347,6 @@
 
   .skills-section {
     border-bottom: 0.5px solid var(--rule);
-    background: var(--paper);
   }
 
   .skills-grid {
@@ -452,7 +389,6 @@
     grid-template-columns: 1fr 1fr;
     min-height: 40vh;
     border-bottom: 0.5px solid var(--rule);
-    background: var(--paper);
   }
 
   .about-left {
@@ -461,7 +397,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: var(--paper);
   }
 
   .about-right {
@@ -469,7 +404,6 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background: var(--paper);
   }
 
   .about-body {
@@ -491,12 +425,7 @@
   }
 
   .timeline-item {
-    display: grid;
-    grid-template-columns: 6rem 1fr;
-    gap: 1.5rem;
-    padding: 1.2rem 0;
-    border-bottom: 0.5px solid var(--rule);
-    align-items: baseline;
+    display: none;
   }
 
   .timeline-year {
@@ -521,7 +450,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     min-height: 40vh;
-    background: var(--paper);
   }
 
   .contact-left {
@@ -530,7 +458,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: var(--paper);
   }
 
   .contact-right {
@@ -539,7 +466,6 @@
     flex-direction: column;
     justify-content: flex-end;
     gap: 1.5rem;
-    background: var(--paper);
   }
 
   .contact-link-row {
@@ -575,7 +501,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--paper);
   }
 
   footer p {
@@ -628,7 +553,6 @@
 <nav id="mainNav">
   <span class="nav-logo">Dvorets — Planning</span>
   <ul class="nav-links">
-    <li><a href="#portfolio">Portfolio</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -642,7 +566,6 @@
 </div>
 
   <div class="hero-sidebar fade-in">
-    <a href="#portfolio" class="hero-sidebar-item">Portfolio</a>
     <a href="#services" class="hero-sidebar-item">Services</a>
     <a href="#about" class="hero-sidebar-item">About</a>
     <a href="#contact" class="hero-sidebar-item">Contact</a>
@@ -654,12 +577,14 @@
     <p class="hero-desc">Curated celebrations at the intersection of refined aesthetics and meticulous execution. We transform visions into immersive experiences that resonate with elegance and intention.</p>
 
     <div class="hero-cta-row" style="margin-bottom: 2rem;">
-      <a href="#portfolio" class="pill-btn-wrapper">View Events</a>
+      <a href="#services" class="pill-btn-wrapper">View Services</a>
       <a href="#contact" class="pill-btn-wrapper" style="margin-left: 1rem;">Inquire</a>
     </div>
+  </div>
 
   <div class="hero-right fade-in-delay-2">
   </div>
+</section>
 
 
 <section id="services">
@@ -723,16 +648,15 @@
 <section id="about">
   <div class="section-heading">About</div>
   <div class="about-section">
- <p class="about-body">
-        Dvorets Planning creates <strong>bespoke celebrations</strong> that honor both <strong>refined aesthetics</strong> and <strong>flawless execution</strong>. We believe luxury lies not just in opulence, but in thoughtful details that create genuine connection.<br><br>
-        Every event is a custom composition — conceptualized from first conversation through final moment. We collaborate with architects, artisans, and tastemakers to transform visions into unforgettable experiences that resonate long after the evening ends.
-      </p>
-   
+
     <div class="about-left">
       <p class="about-body">
         Dvorets Planning creates <strong>bespoke celebrations</strong> that honor both <strong>refined aesthetics</strong> and <strong>flawless execution</strong>. We believe luxury lies not just in opulence, but in thoughtful details that create genuine connection.<br><br>
         Every event is a custom composition — conceptualized from first conversation through final moment. We collaborate with architects, artisans, and tastemakers to transform visions into unforgettable experiences that resonate long after the evening ends.
       </p>
+    </div>
+
+    <div class="about-right">
     </div>
 
   </div>
@@ -766,7 +690,6 @@
       <a href="tel:+1234567890" class="contact-link-val">+1 (234) 567-890</a>
     </div>
 
-     </div>
   </div>
 </section>
 
