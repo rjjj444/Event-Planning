@@ -147,40 +147,7 @@
   }
 
   .hero-name-glitch {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    animation: glitch 6s infinite steps(1);
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-    transform: translate(-2px, -2px);
-    color: var(--ink);
-    text-shadow: 1.5px 0 0 rgba(178, 74, 74, 0.5), -1.5px 0 0 rgba(74, 120, 178, 0.5);
-    pointer-events: none;
-    opacity: 0;
-  }
-
-  @keyframes glitch {
-    0%, 92%, 100% {
-      opacity: 0;
-      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-      transform: translate(0);
-    }
-    93% {
-      opacity: 1;
-      clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%);
-      transform: translate(-5px, -5px);
-    }
-    95% {
-      opacity: 1;
-      clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%);
-      transform: translate(5px, 5px);
-    }
-    97% {
-      opacity: 1;
-      clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%);
-      transform: translate(-3px, 3px);
-    }
+    display: none;
   }
 
   .hero-desc {
@@ -256,162 +223,70 @@
   }
 
   .pill-btn-wrapper {
-    position: relative;
-    display: inline-flex;
-    height: 52px;
-    border-radius: 999px;
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.8rem 2rem;
     text-decoration: none;
     cursor: pointer;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
     font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: none;
+    transition: background 0.2s ease;
+  }
+
+  .pill-btn-wrapper:hover {
+    background: var(--mid);
   }
 
   .pill-bg-glow {
-    position: absolute;
-    inset: -4px;
-    background: rgba(74, 140, 255, 0);
-    filter: blur(16px);
-    opacity: 0;
-    border-radius: 999px;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 0;
-    transform: translateY(2px) scale(0.95);
-    pointer-events: none;
-  }
-
-  .pill-btn-wrapper:hover .pill-bg-glow {
-    opacity: 1;
-    background: rgba(51, 210, 255, 0.35);
-    transform: translateY(4px) scale(1.02);
-    filter: blur(20px);
+    display: none;
   }
 
   .pill-container {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    height: 100%;
-    border-radius: 999px;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-  }
-
-  .pill-btn-wrapper:hover .pill-container {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    display: none;
   }
 
   .pill-cap {
-    width: 48px;
-    height: 100%;
-    background: linear-gradient(180deg, #42424a 0%, #202025 35%, #0f0f13 100%);
-    border-radius: 999px 0 0 999px;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-right: 1px solid #000;
-    box-shadow:
-      inset 4px 0 8px rgba(0, 0, 0, 0.4),
-      inset 0 2px 4px rgba(255, 255, 255, 0.12),
-      inset 0 -3px 6px rgba(0, 0, 0, 0.9);
-    overflow: hidden;
-    z-index: 2;
+    display: none;
   }
 
   .pill-cap::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 6px;
-    right: 2px;
-    height: 16px;
-    background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
-    border-radius: 999px;
-    pointer-events: none;
-    mix-blend-mode: overlay;
+    display: none;
   }
 
   .pill-glass {
-    display: flex;
-    align-items: center;
-    padding: 0 28px 0 20px;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(14, 17, 23, 0.96) 0%, rgba(8, 10, 15, 0.94) 100%);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(51, 210, 255, 0.15);
-    border-left: none;
-    border-radius: 0 999px 999px 0;
-    position: relative;
-    box-shadow:
-      inset 0 0 20px rgba(51, 210, 255, 0.05),
-      inset 0 1px 1px rgba(255, 255, 255, 0.15);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1;
-    overflow: hidden;
+    display: none;
   }
 
   .pill-btn-wrapper:hover .pill-glass {
-    border-color: rgba(51, 210, 255, 0.4);
-    background: linear-gradient(90deg, rgba(16, 22, 32, 0.98) 0%, rgba(8, 12, 20, 0.96) 100%);
-    box-shadow:
-      inset 0 0 30px rgba(51, 210, 255, 0.15),
-      inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    display: none;
   }
 
   .pill-glass::before {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 0;
-    right: 2px;
-    height: 40%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
-    border-radius: 0 999px 0 0;
-    pointer-events: none;
+    display: none;
   }
 
   .pill-inner-glow {
-    position: absolute;
-    left: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: radial-gradient(circle, rgba(51, 210, 255, 0.4) 0%, transparent 70%);
-    opacity: 0.6;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    mix-blend-mode: screen;
+    display: none;
   }
 
   .pill-btn-wrapper:hover .pill-inner-glow {
-    opacity: 1;
-    width: 60px;
-    height: 60px;
-    background: radial-gradient(circle, rgba(51, 210, 255, 0.7) 0%, transparent 70%);
+    display: none;
   }
 
   .pill-content {
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 3;
-    gap: 10px;
+    display: none;
   }
 
   .pill-text {
-    color: rgba(255, 255, 255, 0.8);
-    letter-spacing: 0.5px;
-    font-size: 11px;
-    text-transform: uppercase;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    text-shadow: 0 0 10px rgba(51, 210, 255, 0);
+    display: none;
   }
 
   .pill-btn-wrapper:hover .pill-text {
-    color: #fff;
-    text-shadow: 0 0 12px rgba(51, 210, 255, 0.6);
+    display: none;
   }
 
   .section-heading {
@@ -713,8 +588,6 @@
   </ul>
 </nav>
 
-/*--------------------------------------------------*/
-     
 <section class="hero">
 
 <div class="hero-bg-image" id="heroBgImage">
@@ -734,47 +607,24 @@
     </p>
 
     <div class="hero-cta-row" style="margin-top: 2rem;">
-      <a href="#portfolio" class="pill-btn-wrapper">
-        <div class="pill-bg-glow"></div>
-        <div class="pill-container">
-          <div class="pill-cap"></div>
-          <div class="pill-glass">
-            <div class="pill-inner-glow"></div>
-            <div class="pill-content">
-              <span class="pill-text">View Events</span>
-            </div>
-          </div>
-        </div>
-      </a>
-
-      <a href="#contact" class="pill-btn-wrapper" style="margin-left: 1rem;">
-        <div class="pill-bg-glow"></div>
-        <div class="pill-container">
-          <div class="pill-cap"></div>
-          <div class="pill-glass">
-            <div class="pill-inner-glow"></div>
-            <div class="pill-content">
-              <span class="pill-text">Inquire</span>
-            </div>
-          </div>
-        </div>
-      </a>
+      <a href="#portfolio" class="pill-btn-wrapper">View Events</a>
+      <a href="#contact" class="pill-btn-wrapper" style="margin-left: 1rem;">Inquire</a>
     </div>
   </div>
 
   <div class="hero-right fade-in-delay-2">
     <div class="hero-stats">
       <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Curated Events</p>
+        <p class="hero-stat-num">150+</p>
+        <p class="hero-stat-label">Events Curated</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Corporate Planning</p>
+        <p class="hero-stat-num">12</p>
+        <p class="hero-stat-label">Specialization Areas</p>
       </div>
       <div class="hero-stat">
-        <p class="hero-stat-num"> </p>
-        <p class="hero-stat-label">Elevate Expereinces</p>
+        <p class="hero-stat-num">5+</p>
+        <p class="hero-stat-label">Years Excellence</p>
       </div>
     </div>
 
@@ -782,8 +632,89 @@
   </div>
 </section>
 
-/*--------------------------------------------------*/
-     
+
+<section id="portfolio">
+  <div class="section-heading">Recent Events</div>
+  <div class="projects-grid">
+
+    <a href="#" class="project-card">
+      <p class="project-index">01</p>
+      <h3 class="project-title" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">Masquerade<br>Gala 2026</h3>
+      <div class="project-tags">
+        <span class="tag">Formal</span>
+        <span class="tag">Orchestration</span>
+        <span class="tag">Design</span>
+        <span class="tag">Entertainment</span>
+      </div>
+      <p class="project-desc">An enchanting masked ball featuring a grand ballroom transformation, live orchestra performance, and bespoke tablescape design. 300+ guests across four hours of refined celebration.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <a href="#" class="project-card">
+      <p class="project-index">02</p>
+      <h3 class="project-title">Private Sommelier<br>Soirée</h3>
+      <div class="project-tags">
+        <span class="tag">Intimate</span>
+        <span class="tag">Curated</span>
+        <span class="tag">Luxury</span>
+      </div>
+      <p class="project-desc">An exclusive wine-tasting experience with chef-paired courses and rare vintage selections, hosted in a private estate garden. Custom floral arrangements and ambient soundscape design.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <a href="#" class="project-card">
+      <p class="project-index">03</p>
+      <h3 class="project-title">Luxury Wedding<br>Reception</h3>
+      <div class="project-tags">
+        <span class="tag">Celebration</span>
+        <span class="tag">Design</span>
+        <span class="tag">Coordination</span>
+      </div>
+      <p class="project-desc">A multi-day celebration featuring architectural floral installations, bespoke catering across venues, choreographed entertainment, and a custom lighting design throughout.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <a href="#" class="project-card">
+      <p class="project-index">04</p>
+      <h3 class="project-title">Corporate Gala &<br>Awards Ceremony</h3>
+      <div class="project-tags">
+        <span class="tag">Corporate</span>
+        <span class="tag">Formal</span>
+        <span class="tag">Production</span>
+      </div>
+      <p class="project-desc">A high-profile awards ceremony with stage production, live performances, and refined table design. 800+ attendees with seamless logistics and sophisticated ambiance throughout.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <a href="#" class="project-card">
+      <p class="project-index">05</p>
+      <h3 class="project-title">Private Art<br>Exhibition Opening</h3>
+      <div class="project-tags">
+        <span class="tag">Cultural</span>
+        <span class="tag">Intimate</span>
+        <span class="tag">Curation</span>
+      </div>
+      <p class="project-desc">An invitation-only contemporary art exhibition launch with gallery transformation, champagne service, and curated ambient experience. 150 select collectors and artists.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <a href="#" class="project-card">
+      <p class="project-index">06</p>
+      <h3 class="project-title">Destination<br>Wedding Weekend</h3>
+      <div class="project-tags">
+        <span class="tag">Destination</span>
+        <span class="tag">Luxury</span>
+        <span class="tag">Multi-day</span>
+      </div>
+      <p class="project-desc">A three-day luxury destination celebration across multiple venues, including a rehearsal dinner, main ceremony, and farewell brunch with coordinated accommodations and transport.</p>
+      <span class="project-arrow">↗</span>
+    </a>
+
+   </div>
+  </div>
+</section>
+
+
 <section id="services">
   <div class="section-heading">Services</div>
   <div class="skills-section">
@@ -828,6 +759,7 @@
       <div class="skill-col">
         <h3 class="skill-col-title">Specialties</h3>
         <ul class="skill-list">
+          <li>Luxury Weddings</li>
           <li>Corporate Events</li>
           <li>Private Galas</li>
           <li>Destination Events</li>
