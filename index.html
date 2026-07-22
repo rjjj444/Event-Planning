@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dvorets Planning — Luxury Events</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,8 @@
     --mid: #a8a8a8;                             /* Lighter gray for secondary text */
     --rule: #2a2a2a;                            /* Darker gray for lines */
     --accent: #F5F5F5;                          /* Light accent color */
-    --serif-disp: 'Space Grotesk', sans-serif;
+    --serif-disp: 'Noto Serif Display', serif;  /* Main heading font */
+    --body-font: 'Raleway', sans-serif;         /* Body/subtext font */
     --mono: 'Space Mono', monospace;
     --chalk: #f0ede8;
     --chalk-dim: #d8d5d0;
@@ -29,7 +30,7 @@
   body {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     color: var(--ink);
-    font-family: var(--serif-disp);
+    font-family: var(--body-font);
     font-size: 15px;
     line-height: 1.6;
     overflow-x: hidden;
@@ -168,6 +169,7 @@
 
   .hero-name {
     position: relative;
+    font-family: var(--serif-disp);
     font-size: clamp(3.5rem, 7vw, 5rem);
     font-weight: 700;
     line-height: 0.95;
@@ -262,6 +264,7 @@
     background: #0a0a0a;
     color: #F5F5F5;
     padding: 2.5rem;
+    font-family: var(--serif-disp);
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -302,6 +305,7 @@
   }
 
   .project-title {
+    font-family: var(--serif-disp);
     font-size: clamp(1.4rem, 3vw, 2.2rem);
     font-weight: 700;
     letter-spacing: -0.025em;
@@ -358,7 +362,7 @@
   .skill-col:last-child { border-right: none; }
 
   .skill-col-title {
-    font-family: var(--mono);
+    font-family: var(--serif-disp);
     font-size: 10px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
