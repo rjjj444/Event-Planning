@@ -11,17 +11,17 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --ink: #0a0a0a;
-    --paper: #F9F9F9;
-    --mid: #8a8a8a;
-    --rule: #d0cdc9;
-    --accent: #0a0a0a;
+    --ink: #F5F5F5;                             /* Light off-white for text */
+    --paper: #0a0a0a;                           /* Matte black background */
+    --mid: #a8a8a8;                             /* Lighter gray for secondary text */
+    --rule: #2a2a2a;                            /* Darker gray for lines */
+    --accent: #F5F5F5;                          /* Light accent color */
     --serif-disp: 'Space Grotesk', sans-serif;
     --mono: 'Space Mono', monospace;
     --chalk: #f0ede8;
     --chalk-dim: #d8d5d0;
     --chalk-ghost: #a8a5a0;
-    --border-mid: rgba(10,10,10,0.12);
+    --border-mid: rgba(245,245,245,0.12);      /* Light border */
   }
 
   html { scroll-behavior: smooth; }
@@ -178,7 +178,7 @@
     letter-spacing: -0.04em;
     line-height: 0.88;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgba(10,10,10,0.12);
+    -webkit-text-stroke: 1.5px rgba(245,245,245,0.15);
     pointer-events: none;
     position: absolute;
     right: 2rem;
@@ -224,8 +224,8 @@
 
   .pill-btn-wrapper {
     display: inline-block;
-    background: var(--ink);
-    color: var(--paper);
+    background: #F5F5F5;
+    color: #0a0a0a;
     padding: 0.8rem 2rem;
     text-decoration: none;
     cursor: pointer;
@@ -238,7 +238,7 @@
   }
 
   .pill-btn-wrapper:hover {
-    background: var(--mid);
+    background: #d0d0d0;
   }
 
   .pill-bg-glow {
@@ -290,14 +290,15 @@
   }
 
   .section-heading {
-    background: var(--ink);
-    color: var(--paper);
+    background: #0a0a0a;
+    color: #F5F5F5;
     padding: 2.5rem;
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1;
     text-align: center;
+    border-bottom: 0.5px solid var(--rule);
   }
 
   .projects-grid {
@@ -628,89 +629,8 @@
       </div>
     </div>
 
-    <div class="hero-vertical-type">LUXE</div>
-  </div>
-</section>
-
-
-<section id="portfolio">
-  <div class="section-heading">Recent Events</div>
-  <div class="projects-grid">
-
-    <a href="#" class="project-card">
-      <p class="project-index">01</p>
-      <h3 class="project-title" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">Masquerade<br>Gala 2026</h3>
-      <div class="project-tags">
-        <span class="tag">Formal</span>
-        <span class="tag">Orchestration</span>
-        <span class="tag">Design</span>
-        <span class="tag">Entertainment</span>
-      </div>
-      <p class="project-desc">An enchanting masked ball featuring a grand ballroom transformation, live orchestra performance, and bespoke tablescape design. 300+ guests across four hours of refined celebration.</p>
-      <span class="project-arrow">↗</span>
-    </a>
-
-    <a href="#" class="project-card">
-      <p class="project-index">02</p>
-      <h3 class="project-title">Private Sommelier<br>Soirée</h3>
-      <div class="project-tags">
-        <span class="tag">Intimate</span>
-        <span class="tag">Curated</span>
-        <span class="tag">Luxury</span>
-      </div>
-      <p class="project-desc">An exclusive wine-tasting experience with chef-paired courses and rare vintage selections, hosted in a private estate garden. Custom floral arrangements and ambient soundscape design.</p>
-      <span class="project-arrow">↗</span>
-    </a>
-
-    <a href="#" class="project-card">
-      <p class="project-index">03</p>
-      <h3 class="project-title">Luxury Wedding<br>Reception</h3>
-      <div class="project-tags">
-        <span class="tag">Celebration</span>
-        <span class="tag">Design</span>
-        <span class="tag">Coordination</span>
-      </div>
-      <p class="project-desc">A multi-day celebration featuring architectural floral installations, bespoke catering across venues, choreographed entertainment, and a custom lighting design throughout.</p>
-      <span class="project-arrow">↗</span>
-    </a>
-
-    <a href="#" class="project-card">
-      <p class="project-index">04</p>
-      <h3 class="project-title">Corporate Gala &<br>Awards Ceremony</h3>
-      <div class="project-tags">
-        <span class="tag">Corporate</span>
-        <span class="tag">Formal</span>
-        <span class="tag">Production</span>
-      </div>
-      <p class="project-desc">A high-profile awards ceremony with stage production, live performances, and refined table design. 800+ attendees with seamless logistics and sophisticated ambiance throughout.</p>
-      <span class="project-arrow">↗</span>
-    </a>
-
-    <a href="#" class="project-card">
-      <p class="project-index">05</p>
-      <h3 class="project-title">Private Art<br>Exhibition Opening</h3>
-      <div class="project-tags">
-        <span class="tag">Cultural</span>
-        <span class="tag">Intimate</span>
-        <span class="tag">Curation</span>
-      </div>
-      <p class="project-desc">An invitation-only contemporary art exhibition launch with gallery transformation, champagne service, and curated ambient experience. 150 select collectors and artists.</p>
-      <span class="project-arrow">↗</span>
-    </a>
-
-    <a href="#" class="project-card">
-      <p class="project-index">06</p>
-      <h3 class="project-title">Destination<br>Wedding Weekend</h3>
-      <div class="project-tags">
-        <span class="tag">Destination</span>
-        <span class="tag">Luxury</span>
-        <span class="tag">Multi-day</span>
-      </div>
-      <p class="project-desc">A three-day luxury destination celebration across multiple venues, including a rehearsal dinner, main ceremony, and farewell brunch with coordinated accommodations and transport.</p>
-      <span class="project-arrow">↗</span>
-    </a>
-
-   </div>
+    <div class="hero-vertical-type">Event</div>
+    <div class="hero-vertical-type">Planning</div>
   </div>
 </section>
 
@@ -759,7 +679,6 @@
       <div class="skill-col">
         <h3 class="skill-col-title">Specialties</h3>
         <ul class="skill-list">
-          <li>Luxury Weddings</li>
           <li>Corporate Events</li>
           <li>Private Galas</li>
           <li>Destination Events</li>
@@ -842,7 +761,7 @@
 
     <div class="contact-link-row">
       <span class="contact-link-label">Phone</span>
-      <a href="tel:+1234567890" class="contact-link-val">+1 (234) 567-890</a>
+      <a href="tel:+1234567890" class="contact-link-val">+1 (831) 588-9341</a>
     </div>
 
      </div>
