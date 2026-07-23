@@ -70,63 +70,16 @@
     border-bottom-color: var(--rule);
   }
 
-.nav-logo {
-  font-family: var(--serif-disp);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink);
-  transition: color 0.4s ease;
-  display: flex;
-  align-items: center;
-}
-
-.nav-logo .word {
-  display: flex;
-  align-items: center;
-  height: auto;
-}
-
-   .nav-logo:hover .char:before {
-  transition: 0.6s ease;
-  color: rgba(255, 255, 255, 0.8);
-  animation: falls 1s ease forwards;
-}
-
-.nav-logo:hover .char:nth-child(1):before {
-  animation: falls 0.9s ease 0.2s forwards;
-}
-
-.nav-logo:hover .char:nth-child(2n + 3):before {
-  animation: falls 1s ease 0.3s forwards;
-}
-
-.char {
-  flex: 1;
-  position: relative;
-}
-
-.char:before {
-  content: attr(data-content);
-  position: absolute;
-  top: 0;
-  color: transparent;
-  text-shadow: none;
-}
-
-@keyframes falls {
-  0% {
-    opacity: 0;
-    top: 0;
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: color 0.4s ease;
   }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    top: 100px;
-  }
-}
+
+  nav.scrolled .nav-logo { color: var(--ink); }
 
   .nav-links {
     display: flex;
@@ -206,7 +159,7 @@
   }
 
   .hero-eyebrow {
-    font-family: var(--serif-disp);
+    font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -270,7 +223,7 @@
   }
 
   .hero-stat-label {
-    font-family: var(--serif-disp);
+    font-family: var(--mono);
     font-size: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -295,7 +248,7 @@
     padding: 0.8rem 2rem;
     text-decoration: none;
     cursor: pointer;
-    font-family: var(--serif-disp);
+    font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -307,7 +260,163 @@
     background: #d0d0d0;
   }
 
-  .section-heading {
+  .portfolio-section {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 3rem;
+    padding: 4rem 3rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .portfolio-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .carousel-container {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .carousel-item {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-item.active {
+    opacity: 1;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(245, 245, 245, 0.1);
+    border: 1px solid rgba(245, 245, 245, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--ink);
+    font-size: 24px;
+    z-index: 10;
+  }
+
+  .carousel-arrow:hover {
+    background: rgba(245, 245, 245, 0.2);
+    border-color: rgba(245, 245, 245, 0.5);
+  }
+
+  .carousel-arrow.prev {
+    left: -80px;
+  }
+
+  .carousel-arrow.next {
+    right: -80px;
+  }
+
+  .carousel-info {
+    text-align: center;
+  }
+
+  .carousel-title {
+    font-family: var(--serif-disp);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .carousel-description {
+    font-family: var(--body-font);
+    font-size: 15px;
+    color: var(--mid);
+    max-width: 600px;
+    line-height: 1.8;
+  }
+
+  .portfolio-thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .thumbnail-item {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .thumbnail-item:hover {
+    opacity: 0.9;
+  }
+
+  .thumbnail-item.active {
+    opacity: 1;
+    border-color: var(--ink);
+  }
+
+  .thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 1024px) {
+    .portfolio-section {
+      grid-template-columns: 1fr;
+      padding: 3rem 2rem;
+    }
+
+    .carousel-arrow.prev {
+      left: 20px;
+    }
+
+    .carousel-arrow.next {
+      right: 20px;
+    }
+
+    .portfolio-thumbnails {
+      flex-direction: row;
+      gap: 1rem;
+      max-height: 150px;
+    }
+
+    .thumbnail-item {
+      aspect-ratio: 3/2;
+    }
+  }
     background: #0a0a0a;
     color: #F5F5F5;
     padding: 2.5rem;
@@ -598,28 +707,7 @@
 <body>
 
 <nav id="mainNav">
-  <span class="nav-logo">
-  <span class="word">
-    <span class="char" data-content="D">D</span>
-    <span class="char" data-content="v">v</span>
-    <span class="char" data-content="o">o</span>
-    <span class="char" data-content="r">r</span>
-    <span class="char" data-content="e">e</span>
-    <span class="char" data-content="t">t</span>
-    <span class="char" data-content="s">s</span>
-    <span class="char" data-content=" "> </span>
-    <span class="char" data-content="—">—</span>
-    <span class="char" data-content=" "> </span>
-    <span class="char" data-content="P">P</span>
-    <span class="char" data-content="l">l</span>
-    <span class="char" data-content="a">a</span>
-    <span class="char" data-content="n">n</span>
-    <span class="char" data-content="n">n</span>
-    <span class="char" data-content="i">i</span>
-    <span class="char" data-content="n">n</span>
-    <span class="char" data-content="g">g</span>
-  </span>
-</span>
+  <span class="nav-logo">Dvorets — Planning</span>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
@@ -645,6 +733,49 @@
   </div>
 
   <div class="hero-right fade-in-delay-2">
+  </div>
+</section>
+
+<section class="portfolio-section" id="portfolio">
+  <div class="portfolio-main">
+    <div class="carousel-container">
+      <button class="carousel-arrow prev" onclick="changeSlide(-1)">‹</button>
+      
+      <div class="carousel-item active">
+        <img src="https://via.placeholder.com/800x600/1a1a1a/ffffff?text=Event+1" alt="Event 1">
+      </div>
+      <div class="carousel-item">
+        <img src="https://via.placeholder.com/800x600/1a1a1a/ffffff?text=Event+2" alt="Event 2">
+      </div>
+      <div class="carousel-item">
+        <img src="https://via.placeholder.com/800x600/1a1a1a/ffffff?text=Event+3" alt="Event 3">
+      </div>
+      <div class="carousel-item">
+        <img src="https://via.placeholder.com/800x600/1a1a1a/ffffff?text=Event+4" alt="Event 4">
+      </div>
+
+      <button class="carousel-arrow next" onclick="changeSlide(1)">›</button>
+    </div>
+
+    <div class="carousel-info">
+      <h2 class="carousel-title">Masquerade Gala 2026</h2>
+      <p class="carousel-description">An enchanting masked ball featuring a grand ballroom transformation, live orchestra performance, and bespoke tablescape design. 300+ guests across four hours of refined celebration.</p>
+    </div>
+  </div>
+
+  <div class="portfolio-thumbnails">
+    <div class="thumbnail-item active" onclick="goToSlide(0)">
+      <img src="https://via.placeholder.com/300x300/1a1a1a/ffffff?text=Event+1" alt="Event 1">
+    </div>
+    <div class="thumbnail-item" onclick="goToSlide(1)">
+      <img src="https://via.placeholder.com/300x300/1a1a1a/ffffff?text=Event+2" alt="Event 2">
+    </div>
+    <div class="thumbnail-item" onclick="goToSlide(2)">
+      <img src="https://via.placeholder.com/300x300/1a1a1a/ffffff?text=Event+3" alt="Event 3">
+    </div>
+    <div class="thumbnail-item" onclick="goToSlide(3)">
+      <img src="https://via.placeholder.com/300x300/1a1a1a/ffffff?text=Event+4" alt="Event 4">
+    </div>
   </div>
 </section>
 
@@ -749,7 +880,7 @@
 
     <div class="contact-link-row">
       <span class="contact-link-label">Phone</span>
-      <a href="tel:+1831588934" class="contact-link-val">+1 (831) 588-934</a>
+      <a href="tel:+1234567890" class="contact-link-val">+1 (234) 567-890</a>
     </div>
 
   </div>
@@ -763,6 +894,7 @@
 
 <script>
   const nav = document.getElementById('mainNav');
+  let currentSlide = 0;
 
   window.addEventListener('scroll', () => {
     const heroHeight = window.innerHeight;
@@ -773,6 +905,38 @@
       nav.classList.remove('scrolled');
     }
   });
+
+  function changeSlide(direction) {
+    const items = document.querySelectorAll('.carousel-item');
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
+    
+    currentSlide = (currentSlide + direction + items.length) % items.length;
+    updateCarousel();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+  }
+
+  function updateCarousel() {
+    const items = document.querySelectorAll('.carousel-item');
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
+    
+    items.forEach((item, index) => {
+      item.classList.remove('active');
+      if (index === currentSlide) {
+        item.classList.add('active');
+      }
+    });
+
+    thumbnails.forEach((thumb, index) => {
+      thumb.classList.remove('active');
+      if (index === currentSlide) {
+        thumb.classList.add('active');
+      }
+    });
+  }
 </script>
 
 </body>
