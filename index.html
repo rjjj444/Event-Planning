@@ -70,16 +70,63 @@
     border-bottom-color: var(--rule);
   }
 
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink);
-    transition: color 0.4s ease;
-  }
+.nav-logo {
+  font-family: var(--serif-disp);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 0.4s ease;
+  display: flex;
+  align-items: center;
+}
 
-  nav.scrolled .nav-logo { color: var(--ink); }
+.nav-logo .word {
+  display: flex;
+  align-items: center;
+  height: auto;
+}
+
+   .nav-logo:hover .char:before {
+  transition: 0.6s ease;
+  color: rgba(255, 255, 255, 0.8);
+  animation: falls 1s ease forwards;
+}
+
+.nav-logo:hover .char:nth-child(1):before {
+  animation: falls 0.9s ease 0.2s forwards;
+}
+
+.nav-logo:hover .char:nth-child(2n + 3):before {
+  animation: falls 1s ease 0.3s forwards;
+}
+
+.char {
+  flex: 1;
+  position: relative;
+}
+
+.char:before {
+  content: attr(data-content);
+  position: absolute;
+  top: 0;
+  color: transparent;
+  text-shadow: none;
+}
+
+@keyframes falls {
+  0% {
+    opacity: 0;
+    top: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    top: 100px;
+  }
+}
 
   .nav-links {
     display: flex;
@@ -551,7 +598,28 @@
 <body>
 
 <nav id="mainNav">
-  <span class="nav-logo">Dvorets — Planning</span>
+  <span class="nav-logo">
+  <span class="word">
+    <span class="char" data-content="D">D</span>
+    <span class="char" data-content="v">v</span>
+    <span class="char" data-content="o">o</span>
+    <span class="char" data-content="r">r</span>
+    <span class="char" data-content="e">e</span>
+    <span class="char" data-content="t">t</span>
+    <span class="char" data-content="s">s</span>
+    <span class="char" data-content=" "> </span>
+    <span class="char" data-content="—">—</span>
+    <span class="char" data-content=" "> </span>
+    <span class="char" data-content="P">P</span>
+    <span class="char" data-content="l">l</span>
+    <span class="char" data-content="a">a</span>
+    <span class="char" data-content="n">n</span>
+    <span class="char" data-content="n">n</span>
+    <span class="char" data-content="i">i</span>
+    <span class="char" data-content="n">n</span>
+    <span class="char" data-content="g">g</span>
+  </span>
+</span>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
